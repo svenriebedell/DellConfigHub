@@ -60,6 +60,8 @@ $DOParameter = "/configure -importfile="
 ## Do not change ##
 $DCUProgramName = "dcu-cli.exe"
 $DCUPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell%Command%Update%'").InstallLocation
+$DCUGroup = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateGroup
+$DCUConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateFile
 $DOProgramName = "do-cli.exe"
 $DOPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell Optimizer%'").InstallLocation
 $DOImportPath = Get-ChildItem -path $env:ProgramData -Recurse ImportExport -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
@@ -97,7 +99,7 @@ function get-configdata
     {
     param 
         (
-            [string]$DeviceName
+            [Parameter(mandatory=$true)][string]$DeviceName
         )
     
     $ExcelData = New-Object -ComObject Excel.Application
@@ -111,9 +113,9 @@ function get-ConfigFileName
     
         param 
             (
-                [string]$DellToolName,
-                [string]$FilePath,
-                [string]$FileFormat
+                [Parameter(mandatory=$true)][string]$DellToolName,
+                [Parameter(mandatory=$true)][string]$FilePath,
+                [Parameter(mandatory=$true)][string]$FileFormat
             )
 
         Set-Location $FilePath 
@@ -122,6 +124,16 @@ function get-ConfigFileName
         
         Set-Location \
     
+    }
+
+function get-folderstatus 
+    {
+    param 
+        (
+            [Parameter(mandatory=$true)][string]$Path
+        )
+    
+    Test-Path $Path
     }
 
 
@@ -140,7 +152,6 @@ $CheckDO = Get-DellApp-Installed -DellApp $DOPath
 
 
 #### get configuration files Dell Command | Update, Dell Optimizer, Dell Display Manager and Dell BIOS Settings for client system
-$DCUConfigFile = (get-configdata -DeviceName $Device)[2]
 $DOConfigFile = (get-configdata -DeviceName $Device)[3]
 $BIOSConfigFile = (get-configdata -DeviceName $Device)[4]
 ## $DDMConfigFile = (get-configdata -DeviceName $Device)[5]   ## DDM coming later
@@ -152,8 +163,8 @@ If ($CheckBITS.Status -eq "Running")
     {
         Write-Host "BITS Service is status running"
         Start-BitsTransfer -DisplayName "Dell Command | Update Configuration File" -Source $DCUConfigFile -Destination $TempPath
-        Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
-        Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
+        #Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
+        #Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
         #  Start-BitsTransfer -DisplayName "Dell Display Manager" -Source $DDMConfigFile -Destination $TempPath
 
     }
@@ -175,13 +186,10 @@ $DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArg
 
 $DCUImportResult.ExitCode
 
-## DO Import
+<## DO Import
 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
 $DOFullName = $DOPath + $DOProgramName
 $DOCLIArgument = $DOParameter + $DOConfigFileName
 $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
 
-$DOImportResult.ExitCode
-
-
-
+$DOImportResult.ExitCode #>
