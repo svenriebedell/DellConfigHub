@@ -44,12 +44,14 @@ Knowing Issues
 ################################################################
 $DellTools = @(
     [PSCustomObject]@{Name = "DCUSetting"; Enabled = $true}
+    [PSCustomObject]@{Name = "BIOSPWD"; Enabled = $true}
     [PSCustomObject]@{Name = "DOSetting"; Enabled = $true}
     [PSCustomObject]@{Name = "DDM"; Enabled = $false}
     [PSCustomObject]@{Name = "BIOS"; Enabled = $true}
 )
 
 $TempPath = "C:\Temp\"
+$Keyvault = "https://dellconfighub.blob.core.windows.net/configmaster/KeyVault.xlsx"
 $DCUParameter = "/configure -importSettings="
 $DOParameter = "/configure -importfile="
 
@@ -63,11 +65,210 @@ $DOProgramName = "do-cli.exe"
 $DOPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell Optimizer%'").InstallLocation
 $DOProgramData = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellOptimizer -Name DataFolderName
 $DOImportPath = Get-ChildItem -path $env:ProgramData -Recurse ImportExport -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-$DOConfigFile = "https://dellconfighub.blob.core.windows.net/configmaster/DOPrecision.json"
+$DOConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellOptimizer -Name DOSettingFile
+$BIOSConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\BIOS -Name BIOSFile
+$DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty Name
+
+############################################################################
+# required versions for PowerShell Modules                                 #
+############################################################################
+
+[Version]$PowerShellGetVersion = "2.2.5"
+[Version]$AzKeyVaultVersion = "4.7.0"
+[Version]$AzAccountsVersion = "2.10.1"
 
 ################################################################
 ###  Functions Section                                       ###
 ################################################################
+
+##################################################
+#### Check install missing PowerShell Modules ####
+##################################################
+
+Function Check-Module
+    {
+    param
+        (
+        
+        [string]$ModuleName,
+        [Version]$ModuleVersion
+
+        )
+    
+
+    ########################################
+    #### Check if Module Name exist     ####
+    ########################################
+    
+    $ModuleNameCheck = Get-InstalledModule -Name $ModuleName -ErrorAction Ignore
+
+    If($Null -eq $ModuleNameCheck)
+        {
+        
+        switch ($ModuleName)
+            {
+                Az.Accounts {'AZ'}
+                Az.KeyVault {'AZ'}
+                PowerShellGet {'PowerShellGet'}
+
+            }
+
+        Install-Module -Name $ModuleName -Force -AllowClobber
+
+        $ModuleCheck = Get-InstalledModule -Name $ModuleName | Where-Object{$_.Version -ge "$ModuleVersion"} | Select-Object -ExpandProperty Name
+
+        
+
+        If($null-eq $ModuleCheck)
+            {
+
+            Write-EventLog -LogName "Dell BIOS" -EventId 40 -EntryType Error -Source "BIOS Password Manager" -Message "Error: Powershell Module $ModuleName failed to install on Device $DeviceName"
+
+            }
+
+        Else
+            {
+
+            Write-EventLog -LogName "Dell BIOS" -EventId 42 -EntryType SuccessAudit -Source "BIOS Password Manager" -Message "Success: Powershell Module $ModuleName is successfull installed on Device $DeviceName"
+
+            }
+        }
+
+    
+    Else
+        {  
+     
+        $ModuleCheck = Get-InstalledModule -Name $ModuleName | Where-Object{$_.Version -ge "$ModuleVersion"} | Select-Object -ExpandProperty Name -ErrorAction Ignore
+
+        switch ($ModuleName)
+            {
+                Az.Accounts {'AZ'}
+                Az.KeyVault {'AZ'}
+                PowerShellGet {'PowerShellGet'}
+
+            }
+
+
+        If($null-eq $ModuleCheck)
+            {
+
+            Install-Module -Name $ModuleName -Force -AllowClobber
+
+            $ModuleCheck = Get-InstalledModule -Name $ModuleName | Where-Object{$_.Version -ge "$ModuleVersion"} | Select-Object -ExpandProperty Name
+
+        
+
+            If($null-eq $ModuleCheck)
+                {
+
+                Write-EventLog -LogName "Dell BIOS" -EventId 40 -EntryType Error -Source "BIOS Password Manager" -Message "Error: Powershell Module $ModuleName failed to install on Device $DeviceName"
+
+                }
+
+            Else
+                {
+
+                $AttributStringValue = "is installed"
+                Write-EventLog -LogName "Dell BIOS" -EventId 42 -EntryType SuccessAudit -Source "BIOS Password Manager" -Message "Success: Powershell Module $ModuleName is successfull installed on Device $DeviceName"
+
+                }
+
+      
+            }
+
+        Else
+            {
+
+            Write-EventLog -LogName "Dell BIOS" -EventId 41 -EntryType Information -Source "BIOS Password Manager" -Message "Information: Powershell Module $ModuleName is still existing on Device $DeviceName"
+
+            }
+        }
+   
+    }
+
+    function get-configdata 
+    {
+    param 
+        (
+            #[Parameter(mandatory=$true)][string]$DeviceName
+        )
+    
+    $ExcelData = New-Object -ComObject Excel.Application
+    $ReadFile = $ExcelData.workbooks.open($Keyvault,0,$true)
+    ($ReadFile.ActiveSheet.UsedRange.Rows | Where-Object {$_.Columns["A"].Value2 -eq "Tenant"}).Value2
+    ($ReadFile.ActiveSheet.UsedRange.Rows | Where-Object {$_.Columns["A"].Value2 -eq "ApplicationID"}).Value2
+    ($ReadFile.ActiveSheet.UsedRange.Rows | Where-Object {$_.Columns["A"].Value2 -eq "Secret"}).Value2
+
+    }
+
+
+##################################
+#### Connect to KeyVault      ####
+##################################
+
+Function Connect-KeyVaultPWD
+    {
+
+    #############################################################################
+    # Connect KeyVault                                                          #
+    #############################################################################
+
+    [SecureString]$pwd = ConvertTo-SecureString $Secret -AsPlainText -Force
+    [PSCredential]$Credential = New-Object System.Management.Automation.PSCredential ($ApplicationId, $pwd)
+    Connect-AzAccount -Credential $Credential -Tenant $Tenant -ServicePrincipal  
+
+    }
+
+
+##################################
+#### Request KeyVault BIOSPWD ####
+##################################
+
+Function get-KeyVaultPWD
+{
+
+Param
+    (
+
+    [string]$KeyName 
+
+    )
+
+#############################################################################
+# Check BIOS PWD for Device or PreSharedKey                                 #
+#############################################################################
+
+$secret = (Get-AzKeyVaultSecret -vaultName "PWDBIOS" -name $KeyName) | Select-Object *
+$Get_My_Scret = [System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($secret.SecretValue) 
+$KeyPWD = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto($Get_My_Scret)  
+   
+Return $KeyPWD   
+
+}
+
+############################
+#### Password set check ####
+############################
+
+function AdminPWD-Check
+    {
+
+    # Check AdminPWD status 0 = no PWD is set / 1 = PWD is set
+    $PWstatus = Get-CimInstance -Namespace root/dcim/sysman/wmisecurity -ClassName PasswordObject -Filter "NameId='Admin'" | Select-Object -ExpandProperty IsPasswordSet
+
+    Switch ($PWstatus)
+        {
+
+            0 {$AttributStringValue = 'disabled'}
+            1 {$AttributStringValue = 'enabled'}
+
+        }
+    
+    return $PWstatus,$AttributStringValue
+    
+    }
+
+
 
 function Get-DellApp-Installed 
     {
@@ -119,10 +320,92 @@ function get-folderstatus
     Test-Path $Path
     }
 
+function get-BIOSSettings 
+    {
+
+        $BIOSCCTKData = Get-Content "C:\temp\CCTK_Precision 7560.cctk"
+        $BIOSCCTKData = $BIOSCCTKData -split "="
+        
+        # cleanup special characters
+        foreach ($Setting in $BIOSCCTKData)
+            {
+
+                $Setting.Replace(";","")
+
+
+            }
+        
+        $count = $BIOSCCTKData.Count
+        $Zähler = 1
+        while ($Zähler -lt $count)        
+            {
+                # build a temporary array
+                $BIOSArrayTemp = New-Object -TypeName psobject
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$Zähler]
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$Zähler+1]
+
+                # Add WMI Class
+
+                If (($BIOSCCTKData[$Zähler+1] -like "Enabled") -or ($BIOSCCTKData[$Zähler+1] -like "Disabled"))
+                    {
+
+                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Class' -Value "EnumerationAttribute"
+
+                    }
+                else 
+                    {
+
+                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Class' -Value "unknown"
+                    }
+
+                $Zähler = $Zähler +2
+
+                [array]$BIOSSettings = $BIOSSettings + $BIOSArrayTemp
+            }
+    
+    }
+
 
 ################################################################
 ###  Program Section                                         ###
 ################################################################
+
+###################################################
+###  Program Section - BIOS Password            ###
+###################################################
+
+#############################################################
+#### prepare PowerShell Environment for BIOS PWD request ####
+#############################################################
+
+# AZ PowerShell Module
+$CheckPowerShellModule = Check-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
+# AZ PowerShell Module
+$CheckPowerShellModule = Check-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
+$CheckPowerShellModule = Check-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+
+####################################################
+#### get connection data to connect to KeyVault ####
+####################################################
+[Array]$KeyvaultConnection = get-configdata
+$Tenant = $KeyvaultConnection[1]
+$ApplicationId = $KeyvaultConnection[3]
+$Secret = $KeyvaultConnection[5]
+
+#############################
+#### Connect to KeyVault ####
+#############################
+Connect-KeyVaultPWD
+
+#########################################
+#### get BIOS Password from KeyVault ####
+#########################################
+$BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
+
+##################################
+#### Disconnect from KeyVault ####
+##################################
+Connect-KeyVaultPWD
 
 ###################################################
 ###  Program Section - Dell Command | Update    ###
@@ -140,8 +423,9 @@ $CheckTempPath = get-folderstatus -path $TempPath
 #### generate folder if not exist
 if ($CheckDOPath -ne $true) 
     {
+        $TempDOPath = $env:ProgramData+"\"+$DOProgramData+"\DellOptimizer\ImportExport"
         Write-Host "Folder Optimizer Import is not available and will generate now"
-        New-Item -Path $env:ProgramData\$DOProgramData\DellOptimizer\ImportExport -ItemType Directory -Force
+        New-Item $TempDOPath -ItemType Directory -Force
         Write-Host "Folder Optimizer Import is not available and will generate now:"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
     }
 else 
@@ -168,7 +452,7 @@ If ($CheckBITS.Status -eq "Running")
         Write-Host "BITS Service is status running"
         Start-BitsTransfer -DisplayName "Dell Command | Update Configuration File" -Source $DCUConfigFile -Destination $TempPath
         Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
-        #Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
+        Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
         #  Start-BitsTransfer -DisplayName "Dell Display Manager" -Source $DDMConfigFile -Destination $TempPath
 
     }
@@ -190,10 +474,13 @@ $DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArg
 
 $DCUImportResult.ExitCode
 
-<## DO Import
+## DO Import
 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
 $DOFullName = $DOPath + $DOProgramName
 $DOCLIArgument = $DOParameter + $DOConfigFileName
 $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
 
-$DOImportResult.ExitCode #>
+$DOImportResult.ExitCode
+
+
+
