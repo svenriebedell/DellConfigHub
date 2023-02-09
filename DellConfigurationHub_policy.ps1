@@ -53,6 +53,7 @@ $DellTools = @(
 $TempPath = "C:\Temp\"
 $Keyvault = "https://dellconfighub.blob.core.windows.net/configmaster/KeyVault.xlsx"
 $DCUParameter = "/configure -importSettings="
+$DCUBIOSParameter = "/configure -BIOSPassword="
 $DOParameter = "/configure -importfile="
 
 
@@ -323,46 +324,28 @@ function get-folderstatus
 function get-BIOSSettings 
     {
 
-        $BIOSCCTKData = Get-Content "C:\temp\CCTK_Precision 7560.cctk"
+        [System.Collections.ArrayList]$BIOSCCTKData =  Get-Content "C:\temp\CCTK_Precision 7560.cctk"
+        
+        # Cleanup datas
+        $BIOSCCTKData.Remove("[cctk]")
         $BIOSCCTKData = $BIOSCCTKData -split "="
         
-        # cleanup special characters
-        foreach ($Setting in $BIOSCCTKData)
-            {
-
-                $Setting.Replace(";","")
-
-
-            }
-        
+ 
+     
         $count = $BIOSCCTKData.Count
-        $Zähler = 1
-        while ($Zähler -lt $count)        
+        $BaseCount = 0
+        while ($BaseCount -lt $count)        
             {
                 # build a temporary array
                 $BIOSArrayTemp = New-Object -TypeName psobject
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$Zähler]
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$Zähler+1]
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
 
-                # Add WMI Class
+                $BaseCount = $BaseCount +2
 
-                If (($BIOSCCTKData[$Zähler+1] -like "Enabled") -or ($BIOSCCTKData[$Zähler+1] -like "Disabled"))
-                    {
-
-                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Class' -Value "EnumerationAttribute"
-
-                    }
-                else 
-                    {
-
-                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Class' -Value "unknown"
-                    }
-
-                $Zähler = $Zähler +2
-
-                [array]$BIOSSettings = $BIOSSettings + $BIOSArrayTemp
+               [array]$BIOSSettings += $BIOSArrayTemp
             }
-    
+    return $BIOSSettings
     }
 
 
@@ -405,7 +388,7 @@ $BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
 ##################################
 #### Disconnect from KeyVault ####
 ##################################
-Connect-KeyVaultPWD
+Disconnect-KeyVaultPWD
 
 ###################################################
 ###  Program Section - Dell Command | Update    ###
@@ -474,6 +457,12 @@ $DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArg
 
 $DCUImportResult.ExitCode
 
+## DCU set BIOS PWD
+$DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
+$DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
+
+$DCUBIOSResult.ExitCode
+
 ## DO Import
 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
 $DOFullName = $DOPath + $DOProgramName
@@ -482,5 +471,23 @@ $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgume
 
 $DOImportResult.ExitCode
 
+###################################################
+###  Program Section - BIOS Settings            ###
+###################################################
+
+[System.Collections.ArrayList]$BIOSConfigData = get-BIOSSettings
 
 
+
+
+
+
+###################################################
+###  Program Section - Dell Optimizer           ###
+###################################################
+
+
+
+###################################################
+###  Program Section - Dell Display Manager 2   ###
+###################################################
