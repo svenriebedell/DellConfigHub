@@ -82,6 +82,10 @@ $DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -E
 ###  Functions Section                                       ###
 ################################################################
 
+####################################
+###  Functions Section  BIOS-PW  ###
+####################################
+
 ##################################################
 #### Check install missing PowerShell Modules ####
 ##################################################
@@ -187,7 +191,11 @@ Function Check-Module
    
     }
 
-    function get-configdata 
+
+##################################################
+#### Get KeyVault Connection Informations     ####
+##################################################
+function get-configdata 
     {
     param 
         (
@@ -221,9 +229,9 @@ Function Connect-KeyVaultPWD
     }
 
 
-##################################
-#### Request KeyVault BIOSPWD ####
-##################################
+####################################
+#### Request BIOSPW by KeyVault ####
+####################################
 
 Function get-KeyVaultPWD
 {
@@ -270,12 +278,99 @@ function AdminPWD-Check
     }
 
 
+############################
+#### Password encoding  ####
+############################
+function New-PasswordEncode
+    {
+    param 
+        (
+        
+        [Parameter(mandatory=$true)][string]$AdminPw
+        
+        )
+    
+        # Encoding BIOS Password
+        $Encoder = New-Object System.Text.UTF8Encoding
+        $Bytes = $Encoder.GetBytes($AdminPw)
+   
+        Return $Bytes
+   
+    }
+
+
+###################################
+#### Convert CCTK ini to Array ####
+###################################
+function get-BIOSSettings 
+    {
+
+        [System.Collections.ArrayList]$BIOSCCTKData =  Get-Content "$TempPath\CCTK_Precision 7560.cctk"
+        
+        # Cleanup datas
+        $BIOSCCTKData.Remove("[cctk]")
+        $BIOSCCTKData = $BIOSCCTKData -split "="
+        
+ 
+     
+        $count = $BIOSCCTKData.Count
+        $BaseCount = 0
+        while ($BaseCount -lt $count)        
+            {
+                # build a temporary array
+                $BIOSArrayTemp = New-Object -TypeName psobject
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
+                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
+
+                $BaseCount = $BaseCount +2
+
+               [array]$BIOSSettings += $BIOSArrayTemp
+            }
+    return $BIOSSettings
+    }
+
+
+function set-BIOSConfig 
+    {
+    
+        param 
+            (
+                
+                [Parameter(mandatory=$true)][string]$SettingName,
+                [Parameter(mandatory=$true)][string]$SettingValue,
+                [Parameter(mandatory=$true)][string]$IsSetPWD
+            )
+
+        If($IsSetPWD -eq $true)
+            {
+
+                # set BIOS Setting by WMI with AdminPW authorization
+                $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$SettingName,$SettingValue)
+
+            }
+        else 
+            {
+            
+                # set FastBoot Thorough by WMI
+                $BAI.SetAttribute(0,0,0,$SettingName,$SettingValue)
+            
+            }     
+    
+    
+    }
+
+
+
+##############################################
+###  Functions Section Environment Checks  ###
+##############################################
 
 function Get-DellApp-Installed 
     {
-        param(
-            [Parameter(mandatory=$true)][string]$DellApp
-        )
+        param
+            (
+                [Parameter(mandatory=$true)][string]$DellApp
+            )
 
     If($null -ne $DellApp)
         {
@@ -321,32 +416,6 @@ function get-folderstatus
     Test-Path $Path
     }
 
-function get-BIOSSettings 
-    {
-
-        [System.Collections.ArrayList]$BIOSCCTKData =  Get-Content "C:\temp\CCTK_Precision 7560.cctk"
-        
-        # Cleanup datas
-        $BIOSCCTKData.Remove("[cctk]")
-        $BIOSCCTKData = $BIOSCCTKData -split "="
-        
- 
-     
-        $count = $BIOSCCTKData.Count
-        $BaseCount = 0
-        while ($BaseCount -lt $count)        
-            {
-                # build a temporary array
-                $BIOSArrayTemp = New-Object -TypeName psobject
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
-
-                $BaseCount = $BaseCount +2
-
-               [array]$BIOSSettings += $BIOSArrayTemp
-            }
-    return $BIOSSettings
-    }
 
 
 ################################################################
@@ -479,7 +548,41 @@ $DOImportResult.ExitCode
 
 
 
+# Control check by WMI
+$CheckAdminPW = Get-CimInstance -Namespace root/dcim/sysman/wmisecurity -ClassName PasswordObject -Filter "NameId='Admin'" | Select-Object -ExpandProperty IsPasswordSet
 
+#Connect to the BIOSAttributeInterface WMI class
+$BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+
+if ($CheckAdminPW -eq 0)
+    {
+    
+    # set FastBoot Thorough by WMI
+    $BAI.SetAttribute(0,0,0,"Fastboot","Thorough")
+
+    Exit 0
+
+    }
+
+Else
+    {
+    
+    # Select AdminPW for this device
+    $PWKey = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Dell\BIOS\' -Name BIOS | Select-Object -ExpandProperty BIOS
+    $serviceTag = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Dell\BIOS\' -Name ServiceTag | Select-Object -ExpandProperty ServiceTag
+    $AdminPw = "$serviceTag$PWKey"
+
+    # Encoding BIOS Password
+    $Encoder = New-Object System.Text.UTF8Encoding
+    $Bytes = $Encoder.GetBytes($AdminPw)
+
+
+    # set FastBoot Thorough by WMI with AdminPW authorization
+    $BAI.SetAttribute(1,$Bytes.Length,$Bytes,"Fastboot","Thorough")
+
+    Exit 0
+
+    }
 
 
 ###################################################
