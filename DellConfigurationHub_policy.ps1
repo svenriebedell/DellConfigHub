@@ -268,12 +268,12 @@ function AdminPWD-Check
     Switch ($PWstatus)
         {
 
-            0 {$AttributStringValue = 'disabled'}
-            1 {$AttributStringValue = 'enabled'}
+            0 {$AttributStringValue = $false}
+            1 {$AttributStringValue = $true}
 
         }
     
-    return $PWstatus,$AttributStringValue
+    return $AttributStringValue
     
     }
 
@@ -426,46 +426,121 @@ function get-folderstatus
 ###  Program Section - BIOS Password            ###
 ###################################################
 
-#############################################################
-#### prepare PowerShell Environment for BIOS PWD request ####
-#############################################################
+############################################
+#### Check if AdminPWD is set on device ####
+############################################
 
-# AZ PowerShell Module
-$CheckPowerShellModule = Check-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
-# AZ PowerShell Module
-$CheckPowerShellModule = Check-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
-$CheckPowerShellModule = Check-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+$AdminPWDIsSet = AdminPWD-Check
 
-####################################################
-#### get connection data to connect to KeyVault ####
-####################################################
-[Array]$KeyvaultConnection = get-configdata
-$Tenant = $KeyvaultConnection[1]
-$ApplicationId = $KeyvaultConnection[3]
-$Secret = $KeyvaultConnection[5]
+if ($AdminPWDIsSet -eq $) 
+    {
+        #############################################################
+        #### prepare PowerShell Environment for BIOS PWD request ####
+        #############################################################
 
-#############################
-#### Connect to KeyVault ####
-#############################
-Connect-KeyVaultPWD
+        # AZ PowerShell Module
+        $CheckPowerShellModule = Check-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
+        # AZ PowerShell Module
+        $CheckPowerShellModule = Check-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
+        $CheckPowerShellModule = Check-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
 
-#########################################
-#### get BIOS Password from KeyVault ####
-#########################################
-$BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
+        ####################################################
+        #### get connection data to connect to KeyVault ####
+        ####################################################
+        [Array]$KeyvaultConnection = get-configdata
+        $Tenant = $KeyvaultConnection[1]
+        $ApplicationId = $KeyvaultConnection[3]
+        $Secret = $KeyvaultConnection[5]
 
-##################################
-#### Disconnect from KeyVault ####
-##################################
-Disconnect-KeyVaultPWD
+        #############################
+        #### Connect to KeyVault ####
+        #############################
+        Connect-KeyVaultPWD
+
+        #########################################
+        #### get BIOS Password from KeyVault ####
+        #########################################
+        $BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
+
+        ##################################
+        #### Disconnect from KeyVault ####
+        ##################################
+        Disconnect-KeyVaultPWD
+    }
+else 
+    {
+        Write-Host "No AdminPWD is set on this machine"
+    }
 
 ###################################################
 ###  Program Section - Dell Command | Update    ###
 ###################################################
 
+If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
+    {
+
+        #### Checking if Dell Command | Update ist installed on the client system
+        $CheckDCU = Get-DellApp-Installed -DellApp $DCUPath
+
+        if($CheckDCU -eq $true)
+            {
+                #### Checking if download folder for xlm file is available
+                $CheckTempPath = get-folderstatus -path $TempPath
+
+                if ($CheckTempPath -ne $true) 
+                    {
+                        Write-Host "Folder $TempPath is not available and will generate now"
+                        New-Item -Path $TempPath -ItemType Directory -Force
+                        Write-Host "Folder Optimizer Import is not available and will generate now:"$TempPath
+                    }
+                else 
+                    {
+                        Write-Host "Folder $TempPath is available"
+                    }
+
+            #### Download Configuration Files to client systems
+            $CheckBITS = Get-Service | Where-Object Name -EQ BITS
+
+            If ($CheckBITS.Status -eq "Running")
+                {
+                    Write-Host "BITS Service is status running"
+                    Start-BitsTransfer -DisplayName "Dell Command | Update Configuration File" -Source $DCUConfigFile -Destination $TempPath
+
+                }
+            else 
+                {
+                
+                    Write-Host "BITS Service is disabled program stopps"
+                    Write-Host "DCU Configfile can not be downloaded" 
+
+                }
+            
+            ## DCU Import XML Configfile
+            $DCUConfigFileName = get-ConfigFileName -DellToolName "DCU" -FilePath $TempPath -FileFormat xml
+            $DCUFullName = $DCUPath + $DCUProgramName
+            $DCUCLIArgument = $DCUParameter + $TempPath + $DCUConfigFileName
+            $DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArgument -NoNewWindow -Wait -PassThru
+
+            If($DCUImportResult.ExitCode -eq 0)
+                {
+
+                    Write-Host "Dell Command | Update setting successfull imported"
+                    Remove-Item $TempPath$DCUConfigFileName -Recurse -ErrorAction SilentlyContinue
+                    Write-Host "temporay configfile is deleted"
+
+                }
+            else 
+                {
+                    Write-Host "Dell Command | Update setting import unsuccessfull."
+                    Write-Host "Error Code:" $DCUImportResult.ExitCode
+                }
+            
+            }
+
+    }
 
 #### Checking if Dell Command | Update and Dell Optimizer are installed on the client system
-$CheckDCU = Get-DellApp-Installed -DellApp $DCUPath
+
 $CheckDO = Get-DellApp-Installed -DellApp $DOPath
 
 #### Checking system folder
@@ -485,16 +560,7 @@ else
         Write-Host "Folder Optimizer Import"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport" is available"
     }
 
-    if ($CheckTempPath -ne $true) 
-    {
-        Write-Host "Folder $TempPath is not available and will generate now"
-        New-Item -Path $TempPath -ItemType Directory -Force
-        Write-Host "Folder Optimizer Import is not available and will generate now:"$TempPath
-    }
-else 
-    {
-        Write-Host "Folder $TempPath is available"
-    }
+
 
 #### Download Configuration Files to client systems
 $CheckBITS = Get-Service | Where-Object Name -EQ BITS
@@ -502,7 +568,6 @@ $CheckBITS = Get-Service | Where-Object Name -EQ BITS
 If ($CheckBITS.Status -eq "Running")
     {
         Write-Host "BITS Service is status running"
-        Start-BitsTransfer -DisplayName "Dell Command | Update Configuration File" -Source $DCUConfigFile -Destination $TempPath
         Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
         Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
         #  Start-BitsTransfer -DisplayName "Dell Display Manager" -Source $DDMConfigFile -Destination $TempPath
