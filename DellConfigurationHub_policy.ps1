@@ -90,7 +90,7 @@ $DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -E
 #### Check install missing PowerShell Modules ####
 ##################################################
 
-Function Check-Module
+Function find-Module
     {
     param
         (
@@ -211,16 +211,11 @@ function get-configdata
     }
 
 
-##################################
-#### Connect to KeyVault      ####
-##################################
-
-Function Connect-KeyVaultPWD
+##################################################
+##### Connect KeyVault                        ####
+##################################################
+Function Connect-KeyVaultPWD    
     {
-
-    #############################################################################
-    # Connect KeyVault                                                          #
-    #############################################################################
 
     [SecureString]$pwd = ConvertTo-SecureString $Secret -AsPlainText -Force
     [PSCredential]$Credential = New-Object System.Management.Automation.PSCredential ($ApplicationId, $pwd)
@@ -259,7 +254,7 @@ Return $KeyPWD
 #### Password set check ####
 ############################
 
-function AdminPWD-Check
+function get-AdminPWDStatus
     {
 
     # Check AdminPWD status 0 = no PWD is set / 1 = PWD is set
@@ -430,19 +425,19 @@ function get-folderstatus
 #### Check if AdminPWD is set on device ####
 ############################################
 
-$AdminPWDIsSet = AdminPWD-Check
+$AdminPWDIsSet = get-AdminPWDStatus
 
-if ($AdminPWDIsSet -eq $) 
+if ($AdminPWDIsSet -eq $true) 
     {
         #############################################################
         #### prepare PowerShell Environment for BIOS PWD request ####
         #############################################################
 
         # AZ PowerShell Module
-        $CheckPowerShellModule = Check-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
+        $CheckPowerShellModule = find-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
         # AZ PowerShell Module
-        $CheckPowerShellModule = Check-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
-        $CheckPowerShellModule = Check-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+        $CheckPowerShellModule = find-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
+        $CheckPowerShellModule = find-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
 
         ####################################################
         #### get connection data to connect to KeyVault ####
@@ -465,7 +460,7 @@ if ($AdminPWDIsSet -eq $)
         ##################################
         #### Disconnect from KeyVault ####
         ##################################
-        Disconnect-KeyVaultPWD
+        Disconnect-AzAccount
     }
 else 
     {
@@ -535,30 +530,102 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     Write-Host "Error Code:" $DCUImportResult.ExitCode
                 }
             
+            if ($AdminPWDIsSet -eq $true)
+                {
+
+                    ## DCU set BIOS PWD
+                    $DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
+                    $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
+
+                    $DCUBIOSResult.ExitCode
+
+                    If($DCUBIOSResult.ExitCode -eq 0)
+                    {
+  
+                        Write-Host "Dell Command | Update BIOS setting successfull"
+    
+                    }
+                else 
+                    {
+                        Write-Host "Dell Command | Update BIOS setting unsuccessfull."
+                        Write-Host "Error Code:" $DCUImportResult.ExitCode
+                    }
+
+                }
+            else
+                {
+                
+                   Write-Host "no BIOS PWD is set for Dell Command | Update" 
+
+                }
+            
+            }
+        else
+            {
+
+                Write-Host "No Settings are imported because Dell Command | Update is not installed"
             }
 
     }
-
-#### Checking if Dell Command | Update and Dell Optimizer are installed on the client system
-
-$CheckDO = Get-DellApp-Installed -DellApp $DOPath
-
-#### Checking system folder
-$CheckDOPath = get-folderstatus -Path $env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
-$CheckTempPath = get-folderstatus -path $TempPath
-
-#### generate folder if not exist
-if ($CheckDOPath -ne $true) 
+else 
     {
-        $TempDOPath = $env:ProgramData+"\"+$DOProgramData+"\DellOptimizer\ImportExport"
-        Write-Host "Folder Optimizer Import is not available and will generate now"
-        New-Item $TempDOPath -ItemType Directory -Force
-        Write-Host "Folder Optimizer Import is not available and will generate now:"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
+        Write-Host "Configuration of Dell Command | Update is disabled"
+    }
+
+
+###################################################
+###  Program Section - Dell Optimizer           ###
+###################################################
+
+If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
+    {
+
+        #### Checking if Dell Optimizer is installed on the client system
+        $CheckDO = Get-DellApp-Installed -DellApp $DOPath
+
+        if($CheckDO -eq $true)
+            {
+
+                #### Checking system folder
+                $CheckDOPath = get-folderstatus -Path $env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
+                $CheckTempPath = get-folderstatus -path $TempPath
+
+                #### generate folder if not exist
+                if ($CheckDOPath -ne $true) 
+                    {
+                        $TempDOPath = $env:ProgramData+"\"+$DOProgramData+"\DellOptimizer\ImportExport"
+                        Write-Host "Folder Optimizer Import is not available and will generate now"
+                        New-Item $TempDOPath -ItemType Directory -Force
+                        Write-Host "Folder Optimizer Import is not available and will generate now:"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
+                    }
+                else 
+                    {
+                        Write-Host "Folder Optimizer Import"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport" is available"
+                    }
+                
+                if ($CheckTempPath -ne $true) 
+                    {
+                        Write-Host "Folder $TempPath is not available and will generate now"
+                        New-Item $TempPath -ItemType Directory -Force
+
+                    }
+                else 
+                    {
+                        Write-Host "Folder $TempPath is available"
+                    }
+            }
+        else
+            {
+                Write-Host "No Settings are imported because Dell Optimizer is not installed"
+            }
     }
 else 
     {
-        Write-Host "Folder Optimizer Import"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport" is available"
+        Write-Host "Configuration of Dell Optimizer is disabled"
     }
+
+
+
 
 
 
@@ -591,11 +658,7 @@ $DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArg
 
 $DCUImportResult.ExitCode
 
-## DCU set BIOS PWD
-$DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
-$DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
 
-$DCUBIOSResult.ExitCode
 
 ## DO Import
 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
