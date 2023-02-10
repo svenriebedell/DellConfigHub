@@ -749,42 +749,6 @@ else
     }
 
 
-
-
-
-
-
-if ($CheckAdminPW -eq 0)
-    {
-    
-    # set FastBoot Thorough by WMI
-    $BAI.SetAttribute(0,0,0,"Fastboot","Thorough")
-
-    Exit 0
-
-    }
-
-Else
-    {
-    
-
-
-
-
-    # set FastBoot Thorough by WMI with AdminPW authorization
-    $BAI.SetAttribute(1,$Bytes.Length,$Bytes,"Fastboot","Thorough")
-
-    Exit 0
-
-    }
-
-
-###################################################
-###  Program Section - Dell Optimizer           ###
-###################################################
-
-
-
 ###################################################
 ###  Program Section - Dell Display Manager 2   ###
 ###################################################
