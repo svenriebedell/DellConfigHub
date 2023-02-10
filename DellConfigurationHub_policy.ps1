@@ -504,10 +504,8 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                 }
             else 
                 {
-                
                     Write-Host "BITS Service is disabled program stopps"
                     Write-Host "DCU Configfile can not be downloaded" 
-
                 }
             
             ## DCU Import XML Configfile
@@ -540,16 +538,16 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     $DCUBIOSResult.ExitCode
 
                     If($DCUBIOSResult.ExitCode -eq 0)
-                    {
-  
-                        Write-Host "Dell Command | Update BIOS setting successfull"
+                        {
     
-                    }
-                else 
-                    {
-                        Write-Host "Dell Command | Update BIOS setting unsuccessfull."
-                        Write-Host "Error Code:" $DCUImportResult.ExitCode
-                    }
+                            Write-Host "Dell Command | Update BIOS setting successfull"
+        
+                        }
+                    else 
+                        {
+                            Write-Host "Dell Command | Update BIOS setting unsuccessfull."
+                            Write-Host "Error Code:" $DCUImportResult.ExitCode
+                        }
 
                 }
             else
@@ -613,6 +611,40 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     {
                         Write-Host "Folder $TempPath is available"
                     }
+          
+                #### Download Configuration Files to client systems
+                $CheckBITS = Get-Service | Where-Object Name -EQ BITS
+
+                If ($CheckBITS.Status -eq "Running")
+                    {
+                        Write-Host "BITS Service is status running"
+                        Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
+                    }
+                else 
+                    {
+                        Write-Host "BITS Service is disabled program stopps"
+                        Write-Host "DCU Configfile can not be downloaded" 
+                    }
+
+
+                ## DO Import
+                $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
+                $DOFullName = $DOPath + $DOProgramName
+                $DOCLIArgument = $DOParameter + $DOConfigFileName
+                $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
+
+                $DOImportResult.ExitCode
+
+                If($DOImportResult.ExitCode -eq 0)
+                    {
+                        Write-Host "Dell Optimizer setting imported successfull"
+                    }
+                else 
+                    {
+                        Write-Host "Dell Optimizer setting import is unsuccessfull."
+                        Write-Host "Error Code:" $DOImportResult.ExitCode
+                    }
+
             }
         else
             {
@@ -625,62 +657,102 @@ else
     }
 
 
-
-
-
-
-#### Download Configuration Files to client systems
-$CheckBITS = Get-Service | Where-Object Name -EQ BITS
-
-If ($CheckBITS.Status -eq "Running")
-    {
-        Write-Host "BITS Service is status running"
-        Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
-        Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
-        #  Start-BitsTransfer -DisplayName "Dell Display Manager" -Source $DDMConfigFile -Destination $TempPath
-
-    }
-else 
-    {
-    
-    Write-Host "BITS Service is disabled program stopps"
-    exit 2
-
-    }
-
-
-#### Import Config Dell Command | Update and Dell Optimizer
-## DCU Import
-$DCUConfigFileName = get-ConfigFileName -DellToolName "DCU" -FilePath $TempPath -FileFormat xml
-$DCUFullName = $DCUPath + $DCUProgramName
-$DCUCLIArgument = $DCUParameter + $TempPath + $DCUConfigFileName
-$DCUImportResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUCLIArgument -NoNewWindow -Wait -PassThru
-
-$DCUImportResult.ExitCode
-
-
-
-## DO Import
-$DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
-$DOFullName = $DOPath + $DOProgramName
-$DOCLIArgument = $DOParameter + $DOConfigFileName
-$DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
-
-$DOImportResult.ExitCode
-
 ###################################################
 ###  Program Section - BIOS Settings            ###
 ###################################################
 
-[System.Collections.ArrayList]$BIOSConfigData = get-BIOSSettings
+If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Enabled) -eq $true)
+    {
+        #### Checking if download folder for ini file is available
+        $CheckTempPath = get-folderstatus -path $TempPath
+
+        if ($CheckTempPath -ne $true) 
+            {
+                Write-Host "Folder $TempPath is not available and will generate now"
+                New-Item -Path $TempPath -ItemType Directory -Force
+                Write-Host "Folder Optimizer Import is not available and will generate now:"$TempPath
+            }
+        else 
+            {
+                Write-Host "Folder $TempPath is available"
+            }
+        
+        #### Download Configuration Files to client systems
+        $CheckBITS = Get-Service | Where-Object Name -EQ BITS
+
+        If ($CheckBITS.Status -eq "Running")
+            {
+                Write-Host "BITS Service is status running"
+                Start-BitsTransfer -DisplayName "Dell BIOS Configuration File" -Source $BIOSConfigFile -Destination $TempPath
+            }
+        else 
+            {
+                Write-Host "BITS Service is disabled program stopps"
+                Write-Host "BIOS Configfile can not be downloaded" 
+            }
+
+        [System.Collections.ArrayList]$BIOSConfigData = get-BIOSSettings
+
+        #Connect to the BIOSAttributeInterface WMI class
+        $BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+
+        $AdminPWDIsSet = get-AdminPWDStatus
+
+        if ($AdminPWDIsSet -eq $true)
+            {
+
+                # Encoding BIOS Password
+                $Encoder = New-Object System.Text.UTF8Encoding
+                $Bytes = $Encoder.GetBytes($BIOSPWD)
+
+                foreach ($BIOS in $BIOSConfigData)
+                    {
+
+                        # set BIOS Setting by WMI with AdminPW authorization
+                        $BIOSSettingResult = $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$BIOS.Name,$BIOS.Value)
+
+                        If ($BIOSSettingResult.status -eq 0)
+                            {
+                               Write-Host "BIOS Setting $bios.Name is set successful"
+                            }
+                        else 
+                            {
+                                Write-Host "BIOS Setting $bios.Name is set unsuccessful"
+                                Write-Host "Error Code:"$BIOSSettingResult.status
+                            }
+
+                    }
+            }
+        else 
+            {
+                foreach ($BIOS in $BIOSConfigData)
+                    {
+                        # set BIOS Setting by WMI with AdminPW authorization
+                        $BIOSSettingResult = $BAI.SetAttribute(0,0,0,$BIOS.Name,$BIOS.Value)
+
+                        If ($BIOSSettingResult.status -eq 0)
+                            {
+                                Write-Host "BIOS Setting $bios.Name is set successful"
+                            }
+                        else 
+                            {
+                                Write-Host "BIOS Setting $bios.Name is set unsuccessful"
+                                Write-Host "Error Code:"$BIOSSettingResult.status
+                            }
+                    }
+            }
+                    
+    }
+else 
+    {
+        Write-Host "Configuration of Dell BIOS is disabled"
+    }
 
 
 
-# Control check by WMI
-$CheckAdminPW = Get-CimInstance -Namespace root/dcim/sysman/wmisecurity -ClassName PasswordObject -Filter "NameId='Admin'" | Select-Object -ExpandProperty IsPasswordSet
 
-#Connect to the BIOSAttributeInterface WMI class
-$BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+
+
 
 if ($CheckAdminPW -eq 0)
     {
@@ -695,14 +767,8 @@ if ($CheckAdminPW -eq 0)
 Else
     {
     
-    # Select AdminPW for this device
-    $PWKey = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Dell\BIOS\' -Name BIOS | Select-Object -ExpandProperty BIOS
-    $serviceTag = Get-ItemProperty -Path 'HKLM:\SOFTWARE\Dell\BIOS\' -Name ServiceTag | Select-Object -ExpandProperty ServiceTag
-    $AdminPw = "$serviceTag$PWKey"
 
-    # Encoding BIOS Password
-    $Encoder = New-Object System.Text.UTF8Encoding
-    $Bytes = $Encoder.GetBytes($AdminPw)
+
 
 
     # set FastBoot Thorough by WMI with AdminPW authorization
@@ -722,3 +788,25 @@ Else
 ###################################################
 ###  Program Section - Dell Display Manager 2   ###
 ###################################################
+
+
+
+
+                #### Download Configuration Files to client systems
+                $CheckBITS = Get-Service | Where-Object Name -EQ BITS
+
+                If ($CheckBITS.Status -eq "Running")
+                    {
+                        Write-Host "BITS Service is status running"
+                        Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
+                        Start-BitsTransfer -DisplayName "Dell Client BIOS Settings" -Source $BIOSConfigFile -Destination $TempPath
+                        #  Start-BitsTransfer -DisplayName "Dell Display Manager" -Source $DDMConfigFile -Destination $TempPath
+
+                    }
+                else 
+                    {
+                    
+                    Write-Host "BITS Service is disabled program stopps"
+                    exit 2
+
+                    }
