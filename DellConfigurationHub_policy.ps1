@@ -43,11 +43,11 @@ Knowing Issues
 ###  Variables Section                                       ###
 ################################################################
 $DellTools = @(
-    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $true}
-    [PSCustomObject]@{Name = "BIOSPWD"; Enabled = $true}
+    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $false}
+    [PSCustomObject]@{Name = "BIOSPWD"; Enabled = $false}
     [PSCustomObject]@{Name = "DOSetting"; Enabled = $true}
     [PSCustomObject]@{Name = "DDM"; Enabled = $false}
-    [PSCustomObject]@{Name = "BIOS"; Enabled = $true}
+    [PSCustomObject]@{Name = "BIOS"; Enabled = $false}
 )
 
 $UnuseBIOSSetting = @(
@@ -67,10 +67,11 @@ $DDMParameter = "/1:ImportSettings"
 ## Do not change ##
 $DCUProgramName = "dcu-cli.exe"
 $DCUPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell%Command%Update%'").InstallLocation
-#$DCUGroup = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateGroup
+$DCUGroup = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateGroup
 $DCUConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateFile
 $DOProgramName = "do-cli.exe"
 $DOPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell Optimizer%'").InstallLocation
+$DOFullName = $DOPath + $DOProgramName
 $DOProgramData = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellOptimizer -Name DataFolderName
 $DOImportPath = Get-ChildItem -path $env:ProgramData -Recurse ImportExport -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
 $DOConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellOptimizer -Name DOSettingFile
@@ -348,7 +349,7 @@ function remove-BIOSSetting
     foreach ($unused in $UnuseBIOSSetting)
         {
 
-            $BIOSConfigData | foreach ($setting in $UnuseBIOSSetting) 
+            #$BIOSConfigData | foreach ($setting in $UnuseBIOSSetting) 
                 { }
                 
 
@@ -396,6 +397,10 @@ function set-BIOSConfig
 ##############################################
 ###  Functions Section Environment Checks  ###
 ##############################################
+
+#####################################
+#### Check if Software installed ####
+#####################################
 
 function Get-DellApp-Installed 
     {
@@ -448,6 +453,47 @@ function get-folderstatus
     Test-Path $Path
     }
 
+##############################################
+###  Functions Section Dell Optimizer      ###
+##############################################
+function new-Optimizer-Application
+    {
+        param 
+            (
+                [Parameter(mandatory=$true)][string]$SettingName
+            )
+        
+        [String]$CheckAppPerfomanceStatus = $DOFullName+ "/get -name=AppPerformance.State"
+
+        $HKLMAppPath = (get-childItem -Path 'HKLM:\SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\').Name.Replace("HKEY_LOCAL_MACHINE","HKLM:")
+        
+        $Prio = 1
+        foreach ($KeyPath in $HKLMAppPath)
+            {
+
+                $ProcessName = Get-ItemPropertyValue -Path $KeyPath -Name ProcessName
+                $ProfileName = Get-ItemPropertyValue -Path $KeyPath -Name ProfileName
+
+                Start-Process -FilePath $DOFullName -ArgumentList "/AppPerformance -startLearning -profileName=Edge -processName='C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' -priority=1" -NoNewWindow -Wait
+
+                $Prio = $Prio + 1
+            }
+
+
+ 
+
+            
+        else 
+            {
+                
+                Write-Host "Application.State is disabled Application Settings by Policy will be ignored" -BackgroundColor Yellow
+
+            }
+    
+    
+    
+    
+    }
 
 
 ################################################################
@@ -457,6 +503,9 @@ function get-folderstatus
 ###################################################
 ###  Program Section - BIOS Password            ###
 ###################################################
+
+### creat log ressource
+New-EventLog -LogName "Dell BIOS" -Source "BIOS Password Manager" -ErrorAction Ignore
 
 ############################################
 #### Check if AdminPWD is set on device ####
@@ -578,12 +627,12 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     If($DCUBIOSResult.ExitCode -eq 0)
                         {
     
-                            Write-Host "Dell Command | Update BIOS setting successfull"
+                            Write-Host "Dell Command | Update BIOS setting successfull" -BackgroundColor Green
         
                         }
                     else 
                         {
-                            Write-Host "Dell Command | Update BIOS setting unsuccessfull."
+                            Write-Host "Dell Command | Update BIOS setting unsuccessfull." -BackgroundColor Red
                             Write-Host "Error Code:" $DCUImportResult.ExitCode
                         }
 
@@ -613,7 +662,7 @@ else
 ###  Program Section - Dell Optimizer           ###
 ###################################################
 
-If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
+If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
 
         #### Checking if Dell Optimizer is installed on the client system
@@ -630,24 +679,24 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                 if ($CheckDOPath -ne $true) 
                     {
                         $TempDOPath = $env:ProgramData+"\"+$DOProgramData+"\DellOptimizer\ImportExport"
-                        Write-Host "Folder Optimizer Import is not available and will generate now"
+                        Write-Host "Folder Optimizer Import is not available" -BackgroundColor Yellow
                         New-Item $TempDOPath -ItemType Directory -Force
-                        Write-Host "Folder Optimizer Import is not available and will generate now:"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport
+                        Write-Host "Folder Optimizer Import is not available and will generate now:"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport -BackgroundColor Green
                     }
                 else 
                     {
-                        Write-Host "Folder Optimizer Import"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport" is available"
+                        Write-Host "Folder Optimizer Import"$env:ProgramData\$DOProgramData\DellOptimizer\ImportExport" is available" -BackgroundColor Green
                     }
                 
                 if ($CheckTempPath -ne $true) 
                     {
-                        Write-Host "Folder $TempPath is not available and will generate now"
+                        Write-Host "Folder $TempPath is not available and will generate now" -BackgroundColor Yellow
                         New-Item $TempPath -ItemType Directory -Force
 
                     }
                 else 
                     {
-                        Write-Host "Folder $TempPath is available"
+                        Write-Host "Folder $TempPath is available" -BackgroundColor Green
                     }
           
                 #### Download Configuration Files to client systems
@@ -655,19 +704,18 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
 
                 If ($CheckBITS.Status -eq "Running")
                     {
-                        Write-Host "BITS Service is status running"
+                        Write-Host "BITS Service is status running" -BackgroundColor Green
                         Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
                     }
                 else 
                     {
-                        Write-Host "BITS Service is disabled program stopps"
-                        Write-Host "DCU Configfile can not be downloaded" 
+                        Write-Host "BITS Service is disabled program stopps" -BackgroundColor Yellow
+                        Write-Host "DCU Configfile can not be downloaded" -BackgroundColor Red
                     }
 
 
                 ## DO Import
                 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
-                $DOFullName = $DOPath + $DOProgramName
                 $DOCLIArgument = $DOParameter + $DOConfigFileName
                 $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
 
@@ -675,18 +723,18 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
 
                 If($DOImportResult.ExitCode -eq 0)
                     {
-                        Write-Host "Dell Optimizer setting imported successfull" -ForegroundColor Green
+                        Write-Host "Dell Optimizer setting imported successfull" -BackgroundColor Green
                     }
                 else 
                     {
-                        Write-Host "Dell Optimizer setting import is unsuccessfull." -ForegroundColor Red
+                        Write-Host "Dell Optimizer setting import is unsuccessfull." -BackgroundColor Red
                         Write-Host "Error Code:" $DOImportResult.ExitCode
                     }
 
             }
         else
             {
-                Write-Host "No Settings are imported because Dell Optimizer is not installed" -ForegroundColor Yellow
+                Write-Host "No Settings are imported because Dell Optimizer is not installed" -BackgroundColor Yellow
             }
     }
 else 
