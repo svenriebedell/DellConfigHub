@@ -43,9 +43,9 @@ Knowing Issues
 ###  Variables Section                                       ###
 ################################################################
 $DellTools = @(
-    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $false}
-    [PSCustomObject]@{Name = "BIOSPWD"; Enabled = $false}
+    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $false} # incl. Import XML File and set BIOS PWD is enabled and available by KeyVault
     [PSCustomObject]@{Name = "DOSetting"; Enabled = $true}
+    [PSCustomObject]@{Name = "DOAppLearning"; Enabled = $false}
     [PSCustomObject]@{Name = "DDM"; Enabled = $false}
     [PSCustomObject]@{Name = "BIOS"; Enabled = $false}
 )
@@ -77,7 +77,7 @@ $DOImportPath = Get-ChildItem -path $env:ProgramData -Recurse ImportExport -Erro
 $DOConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellOptimizer -Name DOSettingFile
 $BIOSConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\BIOS -Name BIOSFile
 $DDMProgramName = "ddm.exe"
-$DDMPath = "C:\Program Files\Dell\Dell Display Manager 2.0\"
+$DDMPath = "C:\Program Files\Dell\Dell Display Manager 2\"
 $DDMConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellDisplayManager -Name DDMSettingFile
 $DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty Name
 
@@ -101,7 +101,7 @@ $DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -E
 #### Check install missing PowerShell Modules ####
 ##################################################
 
-Function find-Module
+Function find-AZModule
     {
     param
         (
@@ -230,7 +230,7 @@ Function Connect-KeyVaultPWD
 
     [SecureString]$pwd = ConvertTo-SecureString $Secret -AsPlainText -Force
     [PSCredential]$Credential = New-Object System.Management.Automation.PSCredential ($ApplicationId, $pwd)
-    Connect-AzAccount -Credential $Credential -Tenant $Tenant -ServicePrincipal  
+    $AZConnect = Connect-AzAccount -Credential $Credential -Tenant $Tenant -ServicePrincipal  
 
     }
 
@@ -460,10 +460,10 @@ function new-Optimizer-Application
     {
         param 
             (
-                [Parameter(mandatory=$true)][string]$SettingName
+                #[Parameter(mandatory=$true)][string]$SettingName
             )
         
-        [String]$CheckAppPerfomanceStatus = $DOFullName+ "/get -name=AppPerformance.State"
+        Start-Process -FilePath $DOFullName -ArgumentList "/get -name=AppPerformance.State" -Wait -NoNewWindow
 
         $HKLMAppPath = (get-childItem -Path 'HKLM:\SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\').Name.Replace("HKEY_LOCAL_MACHINE","HKLM:")
         
@@ -495,6 +495,19 @@ function new-Optimizer-Application
     
     }
 
+function Get-StatusOptimizerSetting
+    {
+        param 
+            (
+                [Parameter(mandatory=$true)][string]$SettingName
+            )
+        
+        Set-Location -Path $DOPath
+        .\do-cli.exe /get -name="$SettingName"
+        Set-Location c:\
+    
+    }
+
 
 ################################################################
 ###  Program Section                                         ###
@@ -505,7 +518,7 @@ function new-Optimizer-Application
 ###################################################
 
 ### creat log ressource
-New-EventLog -LogName "Dell BIOS" -Source "BIOS Password Manager" -ErrorAction Ignore
+New-EventLog -LogName "Dell BIOS" -Source "BIOS ConfigHub" -ErrorAction Ignore
 
 ############################################
 #### Check if AdminPWD is set on device ####
@@ -515,15 +528,16 @@ $AdminPWDIsSet = get-AdminPWDStatus
 
 if ($AdminPWDIsSet -eq $true) 
     {
+
+        Write-Host "BIOS Password is set on device starting now get datas from KeyVault" -ForegroundColor Green
         #############################################################
         #### prepare PowerShell Environment for BIOS PWD request ####
         #############################################################
 
         # AZ PowerShell Module
-        $CheckPowerShellModule = find-Module -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
-        # AZ PowerShell Module
-        $CheckPowerShellModule = find-Module -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
-        $CheckPowerShellModule = find-Module -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+        $CheckPowerShellModule = find-AZModule -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
+        $CheckPowerShellModule = find-AZModule -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
+        $CheckPowerShellModule = find-AZModule -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
 
         ####################################################
         #### get connection data to connect to KeyVault ####
@@ -542,12 +556,28 @@ if ($AdminPWDIsSet -eq $true)
         #### get BIOS Password from KeyVault ####
         #########################################
         $BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
+
+        #checking if BIOS PWD was available for device
+        If ($null -ne $BIOSPWD)
+            {
+
+                Write-Host "BIOS Password is found" -BackgroundColor Green
+
+            }
+        else 
+            {
+
+                Write-Host "BIOS Password is not found" -BackgroundColor Red
+                Write-Host "BIOS Settings and DCU Set BIOS Password will not working" -ForegroundColor Red
+
+            }
+
         Write-Host "Get BIOS PW from KeyVault" -ForegroundColor Green
 
         ##################################
         #### Disconnect from KeyVault ####
         ##################################
-        Disconnect-AzAccount
+        $AZDisconnect = Disconnect-AzAccount
     }
 else 
     {
@@ -560,7 +590,8 @@ else
 
 If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
-
+        Write-Host "************************************************************************"
+        Write-Host "******* Start of section Dell Command | Update import config XML *******"
         #### Checking if Dell Command | Update ist installed on the client system
         $CheckDCU = Get-DellApp-Installed -DellApp $DCUPath
 
@@ -571,13 +602,12 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
 
                 if ($CheckTempPath -ne $true) 
                     {
-                        Write-Host "Folder $TempPath is not available and will generate now"
+                        Write-Host "Folder $TempPath is not available and will generate now" -BackgroundColor Yellow
                         New-Item -Path $TempPath -ItemType Directory -Force
-                        Write-Host "Folder Optimizer Import is not available and will generate now:"$TempPath
                     }
                 else 
                     {
-                        Write-Host "Folder $TempPath is available"
+                        Write-Host "Folder $TempPath is available" -BackgroundColor Green
                     }
 
             #### Download Configuration Files to client systems
@@ -585,14 +615,15 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
 
             If ($CheckBITS.Status -eq "Running")
                 {
-                    Write-Host "BITS Service is status running"
+                    Write-Host "BITS Service is status running" -BackgroundColor Green
+                    Write-Host "Download Dell Command | Update XML "$DCUConfigFile
                     Start-BitsTransfer -DisplayName "Dell Command | Update Configuration File" -Source $DCUConfigFile -Destination $TempPath
 
                 }
             else 
                 {
-                    Write-Host "BITS Service is disabled program stopps"
-                    Write-Host "DCU Configfile can not be downloaded" 
+                    Write-Host "BITS Service is disabled program stopps" -BackgroundColor Red
+                    Write-Host "DCU Configfile can not be downloaded" -BackgroundColor Red
                 }
             
             ## DCU Import XML Configfile
@@ -603,44 +634,54 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
 
             If($DCUImportResult.ExitCode -eq 0)
                 {
-
-                    Write-Host "Dell Command | Update setting successfull imported"
+                    Write-Host ""
+                    Write-Host "Dell Command | Update setting successfull imported" -BackgroundColor Green
                     Remove-Item $TempPath$DCUConfigFileName -Recurse -ErrorAction SilentlyContinue
                     Write-Host "temporay configfile is deleted"
 
                 }
             else 
                 {
-                    Write-Host "Dell Command | Update setting import unsuccessfull."
+                    Write-Host "Dell Command | Update setting import unsuccessfull." -BackgroundColor Red
                     Write-Host "Error Code:" $DCUImportResult.ExitCode
                 }
             
+            Write-Host "******* End of section Dell Command | Update import config XML *******"
+            Write-Host "**********************************************************************"
+            Write-Host ""
+            
             if ($AdminPWDIsSet -eq $true)
                 {
-
+                    Write-Host "************************************************************************"
+                    Write-Host "***** Start of section BIOS Password setting Dell Command | Update *****"
                     ## DCU set BIOS PWD
                     $DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
                     $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
-
-                    $DCUBIOSResult.ExitCode
-
+                    
                     If($DCUBIOSResult.ExitCode -eq 0)
                         {
     
-                            Write-Host "Dell Command | Update BIOS setting successfull" -BackgroundColor Green
+                            Write-Host "Dell Command | Update set BIOS Password successfully" -BackgroundColor Green
+                            Write-Host "***** End of section BIOS Password setting Dell Command | Update *****"
+                            Write-Host "**********************************************************************"
+                            Write-Host ""
         
                         }
                     else 
                         {
-                            Write-Host "Dell Command | Update BIOS setting unsuccessfull." -BackgroundColor Red
+                            Write-Host "Dell Command | Update set BIOS Password unsuccessfully." -BackgroundColor Red
                             Write-Host "Error Code:" $DCUImportResult.ExitCode
+                            Write-Host "***** End of section BIOS Password setting Dell Command | Update *****"
+                            Write-Host "****************************************************************"
+                            Write-Host ""
                         }
 
                 }
             else
                 {
-                
-                   Write-Host "no BIOS PWD is set for Dell Command | Update" 
+                    Write-Host "************************************************************************"
+                    Write-Host "***** Start of section BIOS Password setting Dell Command | Update *****"
+                    Write-Host "This device have no BIOS Password" 
 
                 }
             
@@ -662,9 +703,11 @@ else
 ###  Program Section - Dell Optimizer           ###
 ###################################################
 
+### Settings ###
 If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
-
+        Write-Host "************************************************************************"
+        Write-Host "********** Start of section Dell Optimizer import config JSON **********"
         #### Checking if Dell Optimizer is installed on the client system
         $CheckDO = Get-DellApp-Installed -DellApp $DOPath
 
@@ -705,12 +748,13 @@ If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandPropert
                 If ($CheckBITS.Status -eq "Running")
                     {
                         Write-Host "BITS Service is status running" -BackgroundColor Green
+                        Write-Host "Download Dell Optimizer JSON "$DOConfigFile
                         Start-BitsTransfer -DisplayName "Dell Optimizer" -Source $DOConfigFile -Destination $DOImportPath
                     }
                 else 
                     {
                         Write-Host "BITS Service is disabled program stopps" -BackgroundColor Yellow
-                        Write-Host "DCU Configfile can not be downloaded" -BackgroundColor Red
+                        Write-Host "Dell Optimizer Configfile can not be downloaded" -BackgroundColor Red
                     }
 
 
@@ -718,8 +762,6 @@ If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandPropert
                 $DOConfigFileName = get-ConfigFileName -DellToolName "DO" -FilePath $DOImportPath -FileFormat json
                 $DOCLIArgument = $DOParameter + $DOConfigFileName
                 $DOImportResult = Start-Process -FilePath $DOFullName -ArgumentList $DOCLIArgument -NoNewWindow -Wait -PassThru
-
-                $DOImportResult.ExitCode
 
                 If($DOImportResult.ExitCode -eq 0)
                     {
@@ -736,10 +778,29 @@ If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandPropert
             {
                 Write-Host "No Settings are imported because Dell Optimizer is not installed" -BackgroundColor Yellow
             }
+
+        Write-Host "*********** End of section Dell Optimizer import config JSON ***********"
+        Write-Host "************************************************************************"
+        Write-Host ""
+        
     }
 else 
     {
         Write-Host "Configuration of Dell Optimizer is disabled" -ForegroundColor Red
+    }
+
+### Application Learning ###
+$AppPerformenceStatus = Get-StatusOptimizerSetting -SettingName AppPerformance.State
+(($AppPerformenceStatus | Select-String "Value:").Line.Contains("True"))
+
+If((($AppPerformenceStatus | Select-String "Value:").Line.Contains("True")) -eq $true)
+    {
+        Write-Host "AppPerformance.State is enabled" -ForegroundColor Green
+    }
+else
+    {
+        Write-Host "AppPerformance.State is not enabled" -ForegroundColor Red
+        Write-Host "Application learning not used, please check your Optimizer Configuration file" -ForegroundColor Red
     }
 
 
@@ -769,6 +830,7 @@ If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Ena
         If ($CheckBITS.Status -eq "Running")
             {
                 Write-Host "BITS Service is status running" -ForegroundColor Green
+                Write-Host "Download Dell BIOS Setting CCTK "$BIOSConfigFile
                 Start-BitsTransfer -DisplayName "Dell BIOS Configuration File" -Source $BIOSConfigFile -Destination $TempPath
             }
         else 
@@ -841,6 +903,9 @@ else
 
 If(($DellTools |Where-Object Name -EQ "DDM" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
+        Write-Host "************************************************************************"
+        Write-Host "****** Start of section Dell Display Manager 2 import config JSON ******"
+
         #### Checking if Dell Dell Display Manager is installed on the client system
         $CheckDDM= Get-DellApp-Installed -DellApp $DDMPath
 
@@ -865,7 +930,9 @@ If(($DellTools |Where-Object Name -EQ "DDM" | Select-Object -ExpandProperty Enab
                 If ($CheckBITS.Status -eq "Running")
                     {
                         Write-Host "BITS Service is status running" -ForegroundColor Green
+                        Write-Host "Download Dell Disply Manager 2 JSON "$DDMConfigFile
                         Start-BitsTransfer -DisplayName "Dell Display Manager 2.x" -Source $DDMConfigFile -Destination $TempPath
+                        Write-Host ""
 
                     }
                 else 
@@ -882,18 +949,23 @@ If(($DellTools |Where-Object Name -EQ "DDM" | Select-Object -ExpandProperty Enab
 
                 If($DDMImportResult.ExitCode -eq 0)
                     {
-                        Write-Host "Dell Display Manager setting successfull imported"
+                        Write-Host "Dell Display Manager setting successfull imported" -BackgroundColor Green
                         Remove-Item $TempPath$DDMConfigFileName -Recurse -ErrorAction SilentlyContinue
                         Write-Host "temporay configfile is deleted"
                     }
                 else 
                     {
-                        Write-Host "Dell Display Manager setting import unsuccessfull."
+                        Write-Host "Dell Display Manager setting import unsuccessfull." -BackgroundColor Red
                         Write-Host "Error Code:" $DDMImportResult.ExitCode
                     }
             }
+        
+        Write-Host "****** Start of section Dell Display Manager 2 import config JSON ******"
+        Write-Host "************************************************************************"
+        Write-Host ""
     }
 else 
     {
         Write-Host "Configuration of Dell Display Manager is disabled" -ForegroundColor Red
     }
+Write-Host "End of Program"
