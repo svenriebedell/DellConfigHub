@@ -44,10 +44,10 @@ Knowing Issues
 ################################################################
 $DellTools = @(
     [PSCustomObject]@{Name = "DCUSetting"; Enabled = $false} # incl. Import XML File and set BIOS PWD is enabled and available by KeyVault
-    [PSCustomObject]@{Name = "DOSetting"; Enabled = $true}
+    [PSCustomObject]@{Name = "DOSetting"; Enabled = $false}
     [PSCustomObject]@{Name = "DOAppLearning"; Enabled = $false}
     [PSCustomObject]@{Name = "DDM"; Enabled = $false}
-    [PSCustomObject]@{Name = "BIOS"; Enabled = $false}
+    [PSCustomObject]@{Name = "BIOS"; Enabled = $true}
 )
 
 $UnuseBIOSSetting = @(
@@ -55,6 +55,9 @@ $UnuseBIOSSetting = @(
     [PSCustomObject]@{Attribute = "SysId"}
     [PSCustomObject]@{Attribute = "SvcTag"}
     [PSCustomObject]@{Attribute = "BiosVer"}
+    [PSCustomObject]@{Attribute = "Advsm"}
+    [PSCustomObject]@{Attribute = ";ChassisIntruStatus"}
+    
 )
 
 $TempPath = "C:\Temp\"
@@ -310,55 +313,47 @@ function New-PasswordEncode
 ###################################
 function get-BIOSSettings 
     {
+        param 
+        (
+        
+        [Parameter(mandatory=$true)][string]$CCTKFileName
+        
+        )
 
-        [System.Collections.ArrayList]$BIOSCCTKData =  Get-Content "$TempPath\CCTK_Precision 7560.cctk"
+        [System.Collections.ArrayList]$BIOSCCTKData =  Get-Content "$TempPath\$CCTKFileName"
         
         # Cleanup datas
         $BIOSCCTKData.Remove("[cctk]")
         $BIOSCCTKData = $BIOSCCTKData -split "="
-        
- 
+                 
      
         $count = $BIOSCCTKData.Count
         $BaseCount = 0
         while ($BaseCount -lt $count)        
             {
-                # build a temporary array
-                $BIOSArrayTemp = New-Object -TypeName psobject
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
-                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
+                # check and igonre if Attribute part of $UnuseBIOSSetting
+                if(($UnuseBIOSSetting.Attribute.Contains($BIOSCCTKData[$BaseCount])) -ne $true)
+                    {
+                
+                        # build a temporary array if setting not included by $UnuseBIOSSetting
+                        $BIOSArrayTemp = New-Object -TypeName psobject
+                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
+                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
 
-                $BaseCount = $BaseCount +2
+                        $BaseCount = $BaseCount +2
 
-               [array]$BIOSSettings += $BIOSArrayTemp
+                    }
+                else 
+                    {
+
+                        Write-Host "Information: Bios setting" $BIOSCCTKData[$BaseCount] "is incl. on Var UnuseBIOSSetting and not used for the config array" -BackgroundColor Yellow
+                        $BaseCount = $BaseCount +2
+                    }
+
+                [array]$BIOSSettings += $BIOSArrayTemp
             }
     return $BIOSSettings
     }
-
-###################################
-#### Clean BIOS Setting List   ####
-###################################
-function remove-BIOSSetting
-    {
-    param 
-        (
-       
-        )
-
-    
-    foreach ($unused in $UnuseBIOSSetting)
-        {
-
-            #$BIOSConfigData | foreach ($setting in $UnuseBIOSSetting) 
-                { }
-                
-
-
-
-        }
-        
-    }
-    
 
 
 ###################################
@@ -375,20 +370,138 @@ function set-BIOSConfig
                 [Parameter(mandatory=$true)][string]$IsSetPWD
             )
 
-        If($IsSetPWD -eq $true)
+        # Connect to the BIOSAttributeInterface WMI class
+        $BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+        #Connect to the EnumerationAttribute WMI class
+        $BIOSEnumeration = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName EnumerationAttribute
+        #Connect to the IntegerAttribute WMI class
+        $BIOSInteger = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName IntegerAttribute
+        #Connect to the StringAttribute WMI class
+        $BIOSString = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName StringAttribute
+        
+        $WMIClass = $null
+        $SettingStatus = $null
+        
+        If(($BIOSEnumeration.AttributeName.Contains("$SettingName")) -eq $true)
             {
 
-                # set BIOS Setting by WMI with AdminPW authorization
-                $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$SettingName,$SettingValue)
+                Write-Host "Information: Setting $SettingName in WMI Class EnumerationAttribute"
+                $WMIClass = "EnumerationAttribute"
+                $ValueCurrent = $BIOSEnumeration | Where-Object AttributeName -EQ $SettingName | Select-Object -ExpandProperty CurrentValue
+                
+                If ($ValueCurrent -eq $SettingValue)
+                    {
+
+                        Write-Host "Information: $Settingname has same value as CurrentValue" -foregroundColor Yellow
+                        $SettingStatus = $false
+
+                    }
+                else 
+                    {
+                        
+                        Write-Host "Information: $Settingname has not same value as CurrentValue" -ForegroundColor Red
+                        $SettingStatus = $true
+                       
+                    }
 
             }
-        else 
+        If(($BIOSInteger.AttributeName.Contains("$SettingName")) -eq $true)
             {
+
+                Write-Host "Information: Setting $SettingName in WMI Class IntegerAttribute"
+                $WMIClass = "IntegerAttribute"
+                $ValueCurrent = $BIOSInteger | Where-Object AttributeName -EQ $SettingName | Select-Object -ExpandProperty CurrentValue
+
+                If ($ValueCurrent -eq $SettingValue)
+                    {
+
+                        Write-Host "Information: $Settingname has same value as CurrentValue" -foregroundColor Yellow
+                        $SettingStatus = $false
+
+                    }
+                else 
+                    {
+                        
+                        Write-Host "Information: $Settingname has not same value as CurrentValue" -ForegroundColor Red
+                        $SettingStatus = $true
+                       
+                    }
+
+            }
+        If(($BIOSString.AttributeName.Contains("$SettingName")) -eq $true)
+            {
+
+                Write-Host "Information: Setting $SettingName in WMI Class StringAttribute"
+                $WMIClass = "StringAttribute"
+                $ValueCurrent = $BIOSString | Where-Object AttributeName -EQ $SettingName | Select-Object -ExpandProperty CurrentValue
+
+                If ($ValueCurrent -eq $SettingValue)
+                    {
+
+                        Write-Host "Information: $Settingname has same value as CurrentValue" -foregroundColor Yellow
+                        $SettingStatus = $false
+
+                    }
+                else
+                    {
+                        
+                        Write-Host "Information: $Settingname has not same value as CurrentValue" -ForegroundColor Red
+                        $SettingStatus = $true
+                       
+                    }
+
+            }
+        If($null -eq $WMIClass)
+            {
+
+                Write-Host "$SettingName is not supported on this plattform" -BackgroundColor Yellow
+
+            }
+
+        If($SettingStatus -eq $true)
+            {
+
+                if ($IsSetPWD -eq $true)
+                    {
+
+                        # Encoding BIOS Password
+                        $Encoder = New-Object System.Text.UTF8Encoding
+                        $Bytes = $Encoder.GetBytes($BIOSPWD)
+
+                        # set BIOS Setting by WMI with AdminPW authorization
+                        #$BIOSSettingResult = $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$SettingName,$SettingValue)
+
+                        If ($BIOSSettingResult.status -eq 0)
+                            {
+                                Write-Host "Success: BIOS Setting $SettingName is set successful" -BackgroundColor Green
+                            }
+                        else 
+                            {
+                                Write-Host "Error: BIOS Setting $SettingName is set unsuccessful" -BackgroundColor Red
+                                Write-Host "Error Code:"$BIOSSettingResult.status
+                            }
+
             
-                # set FastBoot Thorough by WMI
-                $BAI.SetAttribute(0,0,0,$SettingName,$SettingValue)
+                    }
+                else 
+                    {
+
+                        # set BIOS Setting by WMI with AdminPW authorization
+                        #$BIOSSettingResult = $BAI.SetAttribute(0,0,0,$SettingName,$SettingValue)
+
+                        If ($BIOSSettingResult.status -eq 0)
+                            {
+                                Write-Host "Success: BIOS Setting $SettingName is set successful" -BackgroundColor Green
+                            }
+                        else 
+                            {
+                                Write-Host "Error: BIOS Setting $SettingName is set unsuccessful" -BackgroundColor Red
+                                Write-Host "Error Code:"$BIOSSettingResult.status
+                            }
             
-            }     
+                    }
+
+            } 
     
     
     }
@@ -456,15 +569,9 @@ function get-folderstatus
 ##############################################
 ###  Functions Section Dell Optimizer      ###
 ##############################################
-function new-Optimizer-Application
+function Get-Optimizer-Application
     {
-        param 
-            (
-                #[Parameter(mandatory=$true)][string]$SettingName
-            )
-        
-        Start-Process -FilePath $DOFullName -ArgumentList "/get -name=AppPerformance.State" -Wait -NoNewWindow
-
+   
         $HKLMAppPath = (get-childItem -Path 'HKLM:\SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\').Name.Replace("HKEY_LOCAL_MACHINE","HKLM:")
         
         $Prio = 1
@@ -474,25 +581,37 @@ function new-Optimizer-Application
                 $ProcessName = Get-ItemPropertyValue -Path $KeyPath -Name ProcessName
                 $ProfileName = Get-ItemPropertyValue -Path $KeyPath -Name ProfileName
 
-                Start-Process -FilePath $DOFullName -ArgumentList "/AppPerformance -startLearning -profileName=Edge -processName='C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe' -priority=1" -NoNewWindow -Wait
+                If(("" -ne $ProfileName) -and ("" -ne $ProcessName))
+                    {
+
+                        Write-Host "Profile $ProfileName with $ProcessName is starting to learning mode"
+                        Set-Location -Path $DOPath
+                        $CheckResult = .\do-cli.exe /AppPerformance -startLearning -profileName="$ProfileName" -processName="$ProcessName" -priority=1
+                        Set-Location -Path C:\
+
+                        If($CheckResult -eq $true)
+                            {
+
+                                Write-Host "Success: Profile $ProfileName set successfully" -BackgroundColor Green
+
+                            }
+                        else 
+                            {
+                                
+                                Write-Host "Information: Process $ProcessName is existing on device" -BackgroundColor Yellow
+
+                            }
+
+                    }
+                else 
+                    {
+                        Write-Host "Information: $KeyPath has no values check policy or registry if you missing applications for learning mode" -BackgroundColor Yellow
+                    }
+
 
                 $Prio = $Prio + 1
             }
-
-
- 
-
-            
-        else 
-            {
-                
-                Write-Host "Application.State is disabled Application Settings by Policy will be ignored" -BackgroundColor Yellow
-
-            }
-    
-    
-    
-    
+        
     }
 
 function Get-StatusOptimizerSetting
@@ -517,72 +636,89 @@ function Get-StatusOptimizerSetting
 ###  Program Section - BIOS Password            ###
 ###################################################
 
-### creat log ressource
-New-EventLog -LogName "Dell BIOS" -Source "BIOS ConfigHub" -ErrorAction Ignore
+### starting this section only if Dell Command | Update or BIOS Settings are enabled.
 
-############################################
-#### Check if AdminPWD is set on device ####
-############################################
-
-$AdminPWDIsSet = get-AdminPWDStatus
-
-if ($AdminPWDIsSet -eq $true) 
+If((($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProperty Enabled) -eq $true) -or (($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Enabled) -eq $true))
     {
+        Write-Host "************************************************************************"
+        Write-Host "********* Start BIOS Password Section with Microsoft KeyVault **********"
+        ### creat log ressource
+        New-EventLog -LogName "Dell BIOS" -Source "BIOS ConfigHub" -ErrorAction Ignore
 
-        Write-Host "BIOS Password is set on device starting now get datas from KeyVault" -ForegroundColor Green
-        #############################################################
-        #### prepare PowerShell Environment for BIOS PWD request ####
-        #############################################################
+        ############################################
+        #### Check if AdminPWD is set on device ####
+        ############################################
 
-        # AZ PowerShell Module
-        $CheckPowerShellModule = find-AZModule -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
-        $CheckPowerShellModule = find-AZModule -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
-        $CheckPowerShellModule = find-AZModule -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+        $AdminPWDIsSet = get-AdminPWDStatus
 
-        ####################################################
-        #### get connection data to connect to KeyVault ####
-        ####################################################
-        [Array]$KeyvaultConnection = get-configdata
-        $Tenant = $KeyvaultConnection[1]
-        $ApplicationId = $KeyvaultConnection[3]
-        $Secret = $KeyvaultConnection[5]
-
-        #############################
-        #### Connect to KeyVault ####
-        #############################
-        Connect-KeyVaultPWD
-
-        #########################################
-        #### get BIOS Password from KeyVault ####
-        #########################################
-        $BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
-
-        #checking if BIOS PWD was available for device
-        If ($null -ne $BIOSPWD)
+        if ($AdminPWDIsSet -eq $true) 
             {
 
-                Write-Host "BIOS Password is found" -BackgroundColor Green
+                Write-Host "BIOS Password is set on device starting now get datas from KeyVault" -ForegroundColor Green
+                #############################################################
+                #### prepare PowerShell Environment for BIOS PWD request ####
+                #############################################################
 
+                # AZ PowerShell Module
+                $CheckPowerShellModule = find-AZModule -ModuleName PowerShellGet -ModuleVersion $PowerShellGetVersion
+                $CheckPowerShellModule = find-AZModule -ModuleName Az.Accounts -ModuleVersion $AzAccountsVersion
+                $CheckPowerShellModule = find-AZModule -ModuleName Az.KeyVault -ModuleVersion $AzKeyVaultVersion
+
+                ####################################################
+                #### get connection data to connect to KeyVault ####
+                ####################################################
+                [Array]$KeyvaultConnection = get-configdata
+                $Tenant = $KeyvaultConnection[1]
+                $ApplicationId = $KeyvaultConnection[3]
+                $Secret = $KeyvaultConnection[5]
+
+                #############################
+                #### Connect to KeyVault ####
+                #############################
+                Connect-KeyVaultPWD
+
+                #########################################
+                #### get BIOS Password from KeyVault ####
+                #########################################
+                $BIOSPWD = get-KeyVaultPWD -KeyName $DeviceName
+
+                #checking if BIOS PWD was available for device
+                If ($null -ne $BIOSPWD)
+                    {
+
+                        Write-Host "BIOS Password is found" -BackgroundColor Green
+
+                    }
+                else 
+                    {
+
+                        Write-Host "BIOS Password is not found" -BackgroundColor Red
+                        Write-Host "BIOS Settings and DCU Set BIOS Password will not working" -ForegroundColor Red
+
+                    }
+
+                Write-Host "Get BIOS PW from KeyVault" -ForegroundColor Green
+
+                ##################################
+                #### Disconnect from KeyVault ####
+                ##################################
+                $AZDisconnect = Disconnect-AzAccount
             }
         else 
             {
-
-                Write-Host "BIOS Password is not found" -BackgroundColor Red
-                Write-Host "BIOS Settings and DCU Set BIOS Password will not working" -ForegroundColor Red
-
+                Write-Host "No AdminPWD is set on this machine" -ForegroundColor Yellow
             }
+    
 
-        Write-Host "Get BIOS PW from KeyVault" -ForegroundColor Green
-
-        ##################################
-        #### Disconnect from KeyVault ####
-        ##################################
-        $AZDisconnect = Disconnect-AzAccount
+        Write-Host "********** End BIOS Password Section with Microsoft KeyVault ***********"
+        Write-Host "************************************************************************"
     }
 else 
     {
-        Write-Host "No AdminPWD is set on this machine" -ForegroundColor Yellow
+        Write-Host "Information: No BIOS Password is needed for selected configuration options" -ForegroundColor Yellow
     }
+
+
 
 ###################################################
 ###  Program Section - Dell Command | Update    ###
@@ -656,7 +792,7 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     Write-Host "***** Start of section BIOS Password setting Dell Command | Update *****"
                     ## DCU set BIOS PWD
                     $DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
-                    $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
+                    $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru -NoNewWindow
                     
                     If($DCUBIOSResult.ExitCode -eq 0)
                         {
@@ -703,9 +839,10 @@ else
 ###  Program Section - Dell Optimizer           ###
 ###################################################
 
-### Settings ###
+
 If(($DellTools |Where-Object Name -EQ "DOSetting" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
+        
         Write-Host "************************************************************************"
         Write-Host "********** Start of section Dell Optimizer import config JSON **********"
         #### Checking if Dell Optimizer is installed on the client system
@@ -789,20 +926,41 @@ else
         Write-Host "Configuration of Dell Optimizer is disabled" -ForegroundColor Red
     }
 
-### Application Learning ###
-$AppPerformenceStatus = Get-StatusOptimizerSetting -SettingName AppPerformance.State
-(($AppPerformenceStatus | Select-String "Value:").Line.Contains("True"))
-
-If((($AppPerformenceStatus | Select-String "Value:").Line.Contains("True")) -eq $true)
+If(($DellTools |Where-Object Name -EQ "DOAppLearning" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
-        Write-Host "AppPerformance.State is enabled" -ForegroundColor Green
-    }
-else
-    {
-        Write-Host "AppPerformance.State is not enabled" -ForegroundColor Red
-        Write-Host "Application learning not used, please check your Optimizer Configuration file" -ForegroundColor Red
-    }
+        Write-Host "************************************************************************"
+        Write-Host "********* Start of section Dell Optimizer Application learning *********"
+        ### Application Learning ###
+        $CheckDO = Get-DellApp-Installed -DellApp $DOPath
 
+        if($CheckDO -eq $true)
+            {
+
+                $AppPerformenceStatus = Get-StatusOptimizerSetting -SettingName AppPerformance.State
+
+                If((($AppPerformenceStatus | Select-String "Value:").Line.Contains("True")) -eq $true)
+                    {
+                        Write-Host "AppPerformance.State is enabled" -ForegroundColor Green
+                        Get-Optimizer-Application
+                    }
+                else
+                    {
+                        Write-Host "Error: AppPerformance.State is not enabled" -ForegroundColor Red
+                        Write-Host "Application learning not used, please check your Optimizer Configuration file" -ForegroundColor Red
+                    }
+            }
+        else
+            {
+                Write-Host "Information: No Applications learned because Dell Optimizer is not installed" -BackgroundColor Yellow
+            }
+        Write-Host "********** End of section Dell Optimizer Application learning **********"
+        Write-Host "************************************************************************"
+        Write-Host ""
+    }
+else 
+    {
+        Write-Host "Application learning of Dell Optimizer is disabled" -ForegroundColor Red
+    }
 
 ###################################################
 ###  Program Section - BIOS Settings            ###
@@ -817,7 +975,7 @@ If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Ena
             {
                 Write-Host "Folder $TempPath is not available and will generate now"
                 New-Item -Path $TempPath -ItemType Directory -Force
-                Write-Host "Folder Optimizer Import is not available and will generate now:"$TempPath
+
             }
         else 
             {
@@ -839,55 +997,18 @@ If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Ena
                 Write-Host "BIOS Configfile can not be downloaded" 
             }
 
-        [System.Collections.ArrayList]$BIOSConfigData = get-BIOSSettings
-
-        #Connect to the BIOSAttributeInterface WMI class
-        $BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
-
+        $CCTKConfigFileName = get-ConfigFileName -DellToolName "CCTK" -FilePath $TempPath -FileFormat cctk
+        [System.Collections.ArrayList]$BIOSConfigData = get-BIOSSettings -CCTKFileName $CCTKConfigFileName
+        
+        # Checking if BIOS Admin PWd is set on device and set BIOS Setting with BIOS PWD if needed
         $AdminPWDIsSet = get-AdminPWDStatus
 
-        if ($AdminPWDIsSet -eq $true)
+        # Checken and change BIOS Setting
+        foreach ($BIOS in $BIOSConfigData)
             {
 
-                # Encoding BIOS Password
-                $Encoder = New-Object System.Text.UTF8Encoding
-                $Bytes = $Encoder.GetBytes($BIOSPWD)
-
-                foreach ($BIOS in $BIOSConfigData)
-                    {
-
-                        # set BIOS Setting by WMI with AdminPW authorization
-                        $BIOSSettingResult = $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$BIOS.attribute,$BIOS.Value)
-
-                        If ($BIOSSettingResult.status -eq 0)
-                            {
-                               Write-Host "BIOS Setting $bios.Name is set successful" -ForegroundColor Green
-                            }
-                        else 
-                            {
-                                Write-Host "BIOS Setting $bios.Name is set unsuccessful" -ForegroundColor Red
-                                Write-Host "Error Code:"$BIOSSettingResult.status
-                            }
-
-                    }
-            }
-        else 
-            {
-                foreach ($BIOS in $BIOSConfigData)
-                    {
-                        # set BIOS Setting by WMI with AdminPW authorization
-                        $BIOSSettingResult = $BAI.SetAttribute(0,0,0,$BIOS.Name,$BIOS.Value)
-
-                        If ($BIOSSettingResult.status -eq 0)
-                            {
-                                Write-Host "BIOS Setting $bios.Name is set successful"
-                            }
-                        else 
-                            {
-                                Write-Host "BIOS Setting $bios.Name is set unsuccessful" -ForegroundColor Red -BackgroundColor Gray
-                                Write-Host "Error Code:"$BIOSSettingResult.status
-                            }
-                    }
+                set-BIOSConfig -SettingName $Bios.Attribute -SettingValue $Bios.value -IsSetPWD $AdminPWDIsSet
+                               
             }
                     
     }
