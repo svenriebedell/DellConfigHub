@@ -43,10 +43,10 @@ Knowing Issues
 ###  Variables Section                                       ###
 ################################################################
 $DellTools = @(
-    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $false} # incl. Import XML File and set BIOS PWD is enabled and available by KeyVault
-    [PSCustomObject]@{Name = "DOSetting"; Enabled = $false}
-    [PSCustomObject]@{Name = "DOAppLearning"; Enabled = $false}
-    [PSCustomObject]@{Name = "DDM"; Enabled = $false}
+    [PSCustomObject]@{Name = "DCUSetting"; Enabled = $true} # incl. Import XML File and set BIOS PWD is enabled and available by KeyVault
+    [PSCustomObject]@{Name = "DOSetting"; Enabled = $true}
+    [PSCustomObject]@{Name = "DOAppLearning"; Enabled = $true}
+    [PSCustomObject]@{Name = "DDM"; Enabled = $true}
     [PSCustomObject]@{Name = "BIOS"; Enabled = $true}
 )
 
@@ -57,6 +57,7 @@ $UnuseBIOSSetting = @(
     [PSCustomObject]@{Attribute = "BiosVer"}
     [PSCustomObject]@{Attribute = "Advsm"}
     [PSCustomObject]@{Attribute = ";ChassisIntruStatus"}
+    [PSCustomObject]@{Attribute = "BootOrder"}
     
 )
 
@@ -334,14 +335,32 @@ function get-BIOSSettings
                 # check and igonre if Attribute part of $UnuseBIOSSetting
                 if(($UnuseBIOSSetting.Attribute.Contains($BIOSCCTKData[$BaseCount])) -ne $true)
                     {
-                
-                        # build a temporary array if setting not included by $UnuseBIOSSetting
-                        $BIOSArrayTemp = New-Object -TypeName psobject
-                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
-                        $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
+                        # correction PasswordConfiguration setting for array
+                        If(($BIOSCCTKData[$BaseCount]) -eq "PasswordConfiguration")
+                            {
+                                # Split Value to Attribute and Value by ":"
+                                $PWDSettings = ""
+                                $PWDSettings = $BIOSCCTKData[$BaseCount+1].Split(":")
 
-                        $BaseCount = $BaseCount +2
+                                # build a temporary array if setting not included by $UnuseBIOSSetting
+                                $BIOSArrayTemp = New-Object -TypeName psobject
+                                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $PWDSettings[0]
+                                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $PWDSettings[1]
 
+                                $BaseCount = $BaseCount +2
+
+                            }
+                        else 
+                            {
+                                # build a temporary array if setting not included by $UnuseBIOSSetting
+                                $BIOSArrayTemp = New-Object -TypeName psobject
+                                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Attribute' -Value $BIOSCCTKData[$BaseCount]
+                                $BIOSArrayTemp | Add-Member -MemberType NoteProperty -Name 'Value' -Value $BIOSCCTKData[$BaseCount+1]
+
+                                $BaseCount = $BaseCount +2
+                            }
+
+                        [array]$BIOSSettings += $BIOSArrayTemp
                     }
                 else 
                     {
@@ -350,7 +369,7 @@ function get-BIOSSettings
                         $BaseCount = $BaseCount +2
                     }
 
-                [array]$BIOSSettings += $BIOSArrayTemp
+                
             }
     return $BIOSSettings
     }
@@ -366,12 +385,12 @@ function set-BIOSConfig
             (
                 
                 [Parameter(mandatory=$true)][string]$SettingName,
-                [Parameter(mandatory=$true)][string]$SettingValue,
+                [Parameter(mandatory=$false)][string]$SettingValue,
                 [Parameter(mandatory=$true)][string]$IsSetPWD
             )
 
         # Connect to the BIOSAttributeInterface WMI class
-        $BAI = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+        $BIOSInterface = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
         #Connect to the EnumerationAttribute WMI class
         $BIOSEnumeration = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName EnumerationAttribute
         #Connect to the IntegerAttribute WMI class
@@ -454,7 +473,8 @@ function set-BIOSConfig
         If($null -eq $WMIClass)
             {
 
-                Write-Host "$SettingName is not supported on this plattform" -BackgroundColor Yellow
+                Write-Host "$SettingName have no WMI Class" -BackgroundColor Yellow
+
 
             }
 
@@ -469,7 +489,21 @@ function set-BIOSConfig
                         $Bytes = $Encoder.GetBytes($BIOSPWD)
 
                         # set BIOS Setting by WMI with AdminPW authorization
-                        #$BIOSSettingResult = $BAI.SetAttribute(1,$Bytes.Length,$Bytes,$SettingName,$SettingValue)
+                        $BIOSSettingResult = $BIOSInterface.SetAttribute(1,$Bytes.Length,$Bytes,$SettingName,$SettingValue)
+                        $BIOSSettingCode = $BIOSSettingResult
+
+                        switch ($BIOSSettingCode) 
+                            {
+                                0       {"0 - Success"}
+                                1       {"1 - Failed"}
+                                2       {"2 - Invalid Parameter"}
+                                3       {"3 - Access Denied"}
+                                4       {"4 - Not Supported"}
+                                5       {"5 - Memory Error"}
+                                6       {"6 - Protocol Error"}
+
+                            }
+                            
 
                         If ($BIOSSettingResult.status -eq 0)
                             {
@@ -478,7 +512,7 @@ function set-BIOSConfig
                         else 
                             {
                                 Write-Host "Error: BIOS Setting $SettingName is set unsuccessful" -BackgroundColor Red
-                                Write-Host "Error Code:"$BIOSSettingResult.status
+                                Write-Host "Error Code:"$BIOSSettingCode
                             }
 
             
@@ -487,7 +521,21 @@ function set-BIOSConfig
                     {
 
                         # set BIOS Setting by WMI with AdminPW authorization
-                        #$BIOSSettingResult = $BAI.SetAttribute(0,0,0,$SettingName,$SettingValue)
+                        $BIOSSettingResult = $BIOSInterface.SetAttribute(0,0,0,$SettingName,$SettingValue)
+                        $BIOSSettingCode = $BIOSSettingResult
+
+                        switch ($BIOSSettingCode) 
+                            {
+                                0       {"0 - Success"}
+                                1       {"1 - Failed"}
+                                2       {"2 - Invalid Parameter"}
+                                3       {"3 - Access Denied"}
+                                4       {"4 - Not Supported"}
+                                5       {"5 - Memory Error"}
+                                6       {"6 - Protocol Error"}
+
+                            }
+                            
 
                         If ($BIOSSettingResult.status -eq 0)
                             {
@@ -496,7 +544,7 @@ function set-BIOSConfig
                         else 
                             {
                                 Write-Host "Error: BIOS Setting $SettingName is set unsuccessful" -BackgroundColor Red
-                                Write-Host "Error Code:"$BIOSSettingResult.status
+                                Write-Host "Error Code:"$BIOSSettingCode
                             }
             
                     }
