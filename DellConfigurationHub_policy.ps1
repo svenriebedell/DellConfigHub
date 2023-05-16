@@ -71,18 +71,12 @@ $DDMParameter = "/1:ImportSettings"
 ## Do not change ##
 $DCUProgramName = "dcu-cli.exe"
 $DCUPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell%Command%Update%'").InstallLocation
-$DCUGroup = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateGroup
-$DCUConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -Name UpdateFile
 $DOProgramName = "do-cli.exe"
 $DOPath = (Get-CimInstance -ClassName Win32_Product -Filter "Name like '%Dell Optimizer%'").InstallLocation
 $DOFullName = $DOPath + $DOProgramName
-$DOProgramData = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellOptimizer -Name DataFolderName
 $DOImportPath = Get-ChildItem -path $env:ProgramData -Recurse ImportExport -ErrorAction SilentlyContinue | Select-Object -ExpandProperty FullName
-$DOConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellOptimizer -Name DOSettingFile
-$BIOSConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\BIOS -Name BIOSFile
 $DDMProgramName = "ddm.exe"
 $DDMPath = "C:\Program Files\Dell\Dell Display Manager 2\"
-$DDMConfigFile = Get-ItemPropertyValue HKLM:\SOFTWARE\Dell\DellConfigHub\DellDisplayManager -Name DDMSettingFile
 $DeviceName = Get-CimInstance -ClassName Win32_ComputerSystem | Select-Object -ExpandProperty Name
 
 ############################################################################
@@ -585,7 +579,9 @@ function Get-DellApp-Installed
     
     }
 
-
+#####################################
+#### Get the required Filename   ####
+#####################################
 function get-ConfigFileName 
     {
     
@@ -604,6 +600,9 @@ function get-ConfigFileName
     
     }
 
+#####################################
+#### Check if folder exist       ####
+#####################################
 function get-folderstatus 
     {
     param 
@@ -613,6 +612,80 @@ function get-folderstatus
     
     Test-Path $Path
     }
+
+#####################################
+#### Check if policy setting exist ##
+#####################################
+function get-Policystatus 
+    {
+    param 
+        (
+            [Parameter(mandatory=$true)][string]$RegPath,
+            [Parameter(mandatory=$true)][string]$RegValue
+        )
+    
+        try 
+            {
+                $CheckHKLMPath = Test-Path -Path $RegPath
+
+                if($CheckHKLMPath -eq $true)
+                    {
+
+                        Get-ItemPropertyValue $RegPath -Name $RegValue
+
+                    }
+                else 
+                    {
+                        Return $false
+                    }
+
+                
+
+            }
+        catch 
+            
+            {
+                Return $false
+            }
+
+    }
+
+#####################################
+### Change enable status $DellTools #
+#####################################
+
+function set-Enablestatus 
+    {
+        param 
+            (
+                [Parameter(mandatory=$true)][string]$ToolName,
+                [Parameter(mandatory=$true)][string]$ToolEnabled
+            )
+        
+        
+            if (($DellTools | Where-Object name -EQ $ToolName | Select-Object -ExpandProperty Enabled) -eq $true)
+                {
+
+                    If($ToolEnabled -ne $false)
+                        {
+
+                            Write-Host "Information: $ToolName is enabled and policy found" -BackgroundColor Green
+
+                        }
+                    else 
+                        {
+                            
+                            Write-Host "Error: $ToolName is enabled no policy found. Setting deployment will disabled" -BackgroundColor Red
+                            ($DellTools | Where-Object name -EQ $ToolName).Enabled = $false
+                        }
+
+
+                }
+    
+    
+    
+    }
+
 
 ##############################################
 ###  Functions Section Dell Optimizer      ###
@@ -679,6 +752,24 @@ function Get-StatusOptimizerSetting
 ################################################################
 ###  Program Section                                         ###
 ################################################################
+
+###################################################
+###  Program Section - Get ADMX informations    ###
+###################################################
+
+$DCUConfigFile = get-Policystatus -RegPath HKLM:\SOFTWARE\Dell\DellConfigHub\DellCommandUpdate -RegValue UpdateFile
+$DOProgramData = get-Policystatus -RegPath HKLM:\SOFTWARE\Dell\DellOptimizer -RegValue DataFolderName
+$DOConfigFile = get-Policystatus -RegPath HKLM:\SOFTWARE\Dell\DellConfigHub\DellOptimizer -RegValue DOSettingFile
+$DOAppSettings = get-Policystatus -RegPath HKLM:\SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App1 -RegValue ProcessName #check if you set App1 first by ADMX
+$BIOSConfigFile = get-Policystatus -RegPath HKLM:\SOFTWARE\Dell\DellConfigHub\BIOS -RegValue BIOSFile
+$DDMConfigFile = get-Policystatus -RegPath HKLM:\SOFTWARE\Dell\DellConfigHub\DellDisplayManager -RegValue DDMSettingFile
+
+## Change enabled status to false if no policy is availible
+set-Enablestatus -ToolName DCUSetting -ToolEnabled $DCUConfigFile
+set-Enablestatus -ToolName DOSetting  -ToolEnabled $DOConfigFile
+set-Enablestatus -ToolName DOAppLearning -ToolEnabled $DOAppSettings
+set-Enablestatus -ToolName DDM -ToolEnabled $DDMConfigFile
+set-Enablestatus -ToolName BIOS -ToolEnabled $BIOSConfigFile
 
 ###################################################
 ###  Program Section - BIOS Password            ###
@@ -1058,6 +1149,9 @@ If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Ena
                 set-BIOSConfig -SettingName $Bios.Attribute -SettingValue $Bios.value -IsSetPWD $AdminPWDIsSet
                                
             }
+        
+        Remove-Item $TempPath$DDMConfigFileName -Recurse -ErrorAction SilentlyContinue
+            Write-Host "temporay configfile is deleted"
                     
     }
 else 
