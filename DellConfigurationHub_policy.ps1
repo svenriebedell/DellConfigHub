@@ -39,6 +39,8 @@ Knowing Issues
    PowerShell helping to maintaining settings of Dell Client Management tools by a centralized management.
 #>
 
+Write-Host "Start of Program"
+
 ################################################################
 ###  Variables Section                                       ###
 ################################################################
@@ -383,14 +385,6 @@ function set-BIOSConfig
                 [Parameter(mandatory=$true)][string]$IsSetPWD
             )
 
-        # Connect to the BIOSAttributeInterface WMI class
-        $BIOSInterface = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
-        #Connect to the EnumerationAttribute WMI class
-        $BIOSEnumeration = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName EnumerationAttribute
-        #Connect to the IntegerAttribute WMI class
-        $BIOSInteger = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName IntegerAttribute
-        #Connect to the StringAttribute WMI class
-        $BIOSString = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName StringAttribute
         
         $WMIClass = $null
         $SettingStatus = $null
@@ -753,6 +747,7 @@ function Get-StatusOptimizerSetting
 ###  Program Section                                         ###
 ################################################################
 
+
 ###################################################
 ###  Program Section - Get ADMX informations    ###
 ###################################################
@@ -1105,6 +1100,15 @@ else
 ###  Program Section - BIOS Settings            ###
 ###################################################
 
+# Connect to the BIOSAttributeInterface WMI class
+$BIOSInterface = Get-WmiObject -Namespace root/dcim/sysman/biosattributes -Class BIOSAttributeInterface
+#Connect to the EnumerationAttribute WMI class
+$BIOSEnumeration = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName EnumerationAttribute
+#Connect to the IntegerAttribute WMI class
+$BIOSInteger = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName IntegerAttribute
+#Connect to the StringAttribute WMI class
+$BIOSString = Get-CimInstance -Namespace root\dcim\sysman\biosattributes -ClassName StringAttribute
+
 If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Enabled) -eq $true)
     {
         #### Checking if download folder for ini file is available
@@ -1231,4 +1235,6 @@ else
     {
         Write-Host "Configuration of Dell Display Manager is disabled" -ForegroundColor Red
     }
+
+
 Write-Host "End of Program"
