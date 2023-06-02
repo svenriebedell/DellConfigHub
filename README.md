@@ -1,5 +1,5 @@
 # DellConfigurationHub
-Newest Version: 1.0.0
+Latest Version: 1.0.0
 
 Changelog:
 1.0.0 First public version
