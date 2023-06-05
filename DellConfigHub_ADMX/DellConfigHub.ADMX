@@ -1,0 +1,216 @@
+<policyDefinitions revision="1.0" schemaVersion="1.0"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<policyNamespaces>
+		<target prefix="Dell.ConfigHub" namespace="Dell.ConfigHub.F84D83DF_0841_468D_9B4B_2534544C0CB6"/>
+		<using prefix="windows" namespace="Microsoft.Policies.Windows"/>
+	</policyNamespaces>
+	<supersededAdm fileName=""/>
+	<resources minRequiredRevision="1.0" fallbackCulture="en-US"/>
+	<categories>
+		<category name="CAT_XML_2_ADMXL" displayName="$(string.CAT_XML_2_ADMXL)" explainText="$(string.CAT_XML_2_ADMXL_HELP)"/>
+		<category name="CAT_4A40EB89_E1FE_4F50_9FCE_CC5642C86E1A" displayName="$(string.CAT_4A40EB89_E1FE_4F50_9FCE_CC5642C86E1A)" explainText="$(string.CAT_4A40EB89_E1FE_4F50_9FCE_CC5642C86E1A_HELP)">
+			<parentCategory ref="CAT_XML_2_ADMXL"/>
+		</category>
+		<category name="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA" displayName="$(string.CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA)" explainText="$(string.CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA_HELP)">
+			<parentCategory ref="CAT_4A40EB89_E1FE_4F50_9FCE_CC5642C86E1A"/>
+		</category>
+		<category name="CAT_C24D823A_A5F6_4C6A_BAC7_333ABAFFB0EB" displayName="$(string.CAT_C24D823A_A5F6_4C6A_BAC7_333ABAFFB0EB)" explainText="$(string.CAT_C24D823A_A5F6_4C6A_BAC7_333ABAFFB0EB_HELP)">
+			<parentCategory ref="CAT_XML_2_ADMXL"/>
+		</category>
+		<category name="CAT_F559A4B5_C42C_4DF6_AD09_41937AF8E67E" displayName="$(string.CAT_F559A4B5_C42C_4DF6_AD09_41937AF8E67E)" explainText="$(string.CAT_F559A4B5_C42C_4DF6_AD09_41937AF8E67E_HELP)">
+			<parentCategory ref="CAT_XML_2_ADMXL"/>
+		</category>
+		<category name="CAT_55FD782E_1C41_43D0_B283_CC30F24C5407" displayName="$(string.CAT_55FD782E_1C41_43D0_B283_CC30F24C5407)" explainText="$(string.CAT_55FD782E_1C41_43D0_B283_CC30F24C5407_HELP)">
+			<parentCategory ref="CAT_XML_2_ADMXL"/>
+		</category>
+		<category name="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828" displayName="$(string.CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828)" explainText="$(string.CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828_HELP)">
+			<parentCategory ref="CAT_XML_2_ADMXL"/>
+		</category>
+		<category name="CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A" displayName="$(string.CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A)" explainText="$(string.CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A_HELP)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+		</category>
+		<category name="CAT_6DAF2D32_A5E5_40E3_9A90_CC960CB960D6" displayName="$(string.CAT_6DAF2D32_A5E5_40E3_9A90_CC960CB960D6)" explainText="$(string.CAT_6DAF2D32_A5E5_40E3_9A90_CC960CB960D6_HELP)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+		</category>
+		<category name="CAT_07AAEA8B_96CB_4361_B771_5B4EA3E60FC1" displayName="$(string.CAT_07AAEA8B_96CB_4361_B771_5B4EA3E60FC1)" explainText="$(string.CAT_07AAEA8B_96CB_4361_B771_5B4EA3E60FC1_HELP)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+		</category>
+		<category name="CAT_D31C1F87_1D5E_4ECB_A9B4_63CE7209AE18" displayName="$(string.CAT_D31C1F87_1D5E_4ECB_A9B4_63CE7209AE18)" explainText="$(string.CAT_D31C1F87_1D5E_4ECB_A9B4_63CE7209AE18_HELP)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+		</category>
+		<category name="CAT_EC665C71_4588_4CF1_BC2A_582F79978AD5" displayName="$(string.CAT_EC665C71_4588_4CF1_BC2A_582F79978AD5)" explainText="$(string.CAT_EC665C71_4588_4CF1_BC2A_582F79978AD5_HELP)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+		</category>
+	</categories>
+	<policies>
+		<policy name="POL_CD2F344E_8663_4D7C_9318_CBDF4C000808" displayName="$(string.POL_CD2F344E_8663_4D7C_9318_CBDF4C000808)" explainText="$(string.POL_CD2F344E_8663_4D7C_9318_CBDF4C000808_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS" class="Machine" presentation="$(presentation.POL_CD2F344E_8663_4D7C_9318_CBDF4C000808)">
+			<parentCategory ref="CAT_4A40EB89_E1FE_4F50_9FCE_CC5642C86E1A"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_CD2F344E_8663_4D7C_9318_CBDF4C000808" valueName="BIOSFile"/>
+			</elements>
+		</policy>
+		<policy name="POL_25635B44_3FF5_4750_8E6F_40B326E1A886" displayName="$(string.POL_25635B44_3FF5_4750_8E6F_40B326E1A886)" explainText="$(string.POL_25635B44_3FF5_4750_8E6F_40B326E1A886_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_25635B44_3FF5_4750_8E6F_40B326E1A886)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_25635B44_3FF5_4750_8E6F_40B326E1A886" valueName="Camera"/>
+			</elements>
+		</policy>
+		<policy name="POL_B4A4CFC9_8479_4556_858F_4218F071630E" displayName="$(string.POL_B4A4CFC9_8479_4556_858F_4218F071630E)" explainText="$(string.POL_B4A4CFC9_8479_4556_858F_4218F071630E_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_B4A4CFC9_8479_4556_858F_4218F071630E)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_B4A4CFC9_8479_4556_858F_4218F071630E" valueName="CapsuleFirmwareUpdate"/>
+			</elements>
+		</policy>
+		<policy name="POL_42FFC475_2943_42F2_965F_6834D7FF38F2" displayName="$(string.POL_42FFC475_2943_42F2_965F_6834D7FF38F2)" explainText="$(string.POL_42FFC475_2943_42F2_965F_6834D7FF38F2_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_42FFC475_2943_42F2_965F_6834D7FF38F2)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_42FFC475_2943_42F2_965F_6834D7FF38F2" valueName="ChasIntrusion"/>
+			</elements>
+		</policy>
+		<policy name="POL_5A4EB126_8764_4184_B557_80ACB7F5FFB0" displayName="$(string.POL_5A4EB126_8764_4184_B557_80ACB7F5FFB0)" explainText="$(string.POL_5A4EB126_8764_4184_B557_80ACB7F5FFB0_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_5A4EB126_8764_4184_B557_80ACB7F5FFB0)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_5A4EB126_8764_4184_B557_80ACB7F5FFB0" valueName="Fastboot"/>
+			</elements>
+		</policy>
+		<policy name="POL_302EACEB_4895_49A1_8CE8_AF5A108C46C1" displayName="$(string.POL_302EACEB_4895_49A1_8CE8_AF5A108C46C1)" explainText="$(string.POL_302EACEB_4895_49A1_8CE8_AF5A108C46C1_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_302EACEB_4895_49A1_8CE8_AF5A108C46C1)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_302EACEB_4895_49A1_8CE8_AF5A108C46C1" valueName="ThermalManagement"/>
+			</elements>
+		</policy>
+		<policy name="POL_F72AB949_944D_487F_BEEE_C3DC0D64A135" displayName="$(string.POL_F72AB949_944D_487F_BEEE_C3DC0D64A135)" explainText="$(string.POL_F72AB949_944D_487F_BEEE_C3DC0D64A135_HELP)" key="SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings" class="Machine" presentation="$(presentation.POL_F72AB949_944D_487F_BEEE_C3DC0D64A135)">
+			<parentCategory ref="CAT_1773AF30_A2C6_41C9_A05E_85E0DDDD32CA"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_F72AB949_944D_487F_BEEE_C3DC0D64A135" valueName="ThunderboltBoot"/>
+			</elements>
+		</policy>
+		<policy name="POL_D399AAD1_B94B_4C1C_AC77_6F4D0248D745" displayName="$(string.POL_D399AAD1_B94B_4C1C_AC77_6F4D0248D745)" explainText="$(string.POL_D399AAD1_B94B_4C1C_AC77_6F4D0248D745_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellCommandUpdate" class="Machine" presentation="$(presentation.POL_D399AAD1_B94B_4C1C_AC77_6F4D0248D745)">
+			<parentCategory ref="CAT_C24D823A_A5F6_4C6A_BAC7_333ABAFFB0EB"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_D399AAD1_B94B_4C1C_AC77_6F4D0248D745" valueName="UpdateFile"/>
+			</elements>
+		</policy>
+		<policy name="POL_17EA26A3_89C8_4939_AB9F_77A894E1EA4C" displayName="$(string.POL_17EA26A3_89C8_4939_AB9F_77A894E1EA4C)" explainText="$(string.POL_17EA26A3_89C8_4939_AB9F_77A894E1EA4C_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellCommandUpdate" class="Machine" presentation="$(presentation.POL_17EA26A3_89C8_4939_AB9F_77A894E1EA4C)">
+			<parentCategory ref="CAT_C24D823A_A5F6_4C6A_BAC7_333ABAFFB0EB"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_17EA26A3_89C8_4939_AB9F_77A894E1EA4C" valueName="UpdatePolicy"/>
+			</elements>
+		</policy>
+		<policy name="POL_CCC7D2B2_F3A2_466D_9962_42CD710E80C4" displayName="$(string.POL_CCC7D2B2_F3A2_466D_9962_42CD710E80C4)" explainText="$(string.POL_CCC7D2B2_F3A2_466D_9962_42CD710E80C4_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellDisplayManager" class="Machine" presentation="$(presentation.POL_CCC7D2B2_F3A2_466D_9962_42CD710E80C4)">
+			<parentCategory ref="CAT_F559A4B5_C42C_4DF6_AD09_41937AF8E67E"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_CCC7D2B2_F3A2_466D_9962_42CD710E80C4" valueName="DDMSettingFile"/>
+			</elements>
+		</policy>
+		<policy name="POL_7F920234_8FAA_4864_B004_7F6BB9B1FA61" displayName="$(string.POL_7F920234_8FAA_4864_B004_7F6BB9B1FA61)" explainText="$(string.POL_7F920234_8FAA_4864_B004_7F6BB9B1FA61_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer" class="Machine" presentation="$(presentation.POL_7F920234_8FAA_4864_B004_7F6BB9B1FA61)">
+			<parentCategory ref="CAT_55FD782E_1C41_43D0_B283_CC30F24C5407"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_7F920234_8FAA_4864_B004_7F6BB9B1FA61" valueName="DOSettingFile"/>
+			</elements>
+		</policy>
+		<policy name="POL_B689A902_90ED_48FE_B558_A1CC3C945F85" displayName="$(string.POL_B689A902_90ED_48FE_B558_A1CC3C945F85)" explainText="$(string.POL_B689A902_90ED_48FE_B558_A1CC3C945F85_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications" class="Machine" presentation="$(presentation.POL_B689A902_90ED_48FE_B558_A1CC3C945F85)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_B689A902_90ED_48FE_B558_A1CC3C945F85" valueName="AppPerformance.State"/>
+			</elements>
+		</policy>
+		<policy name="POL_0B1165BF_E984_41C3_86F3_C29D5649BA16" displayName="$(string.POL_0B1165BF_E984_41C3_86F3_C29D5649BA16)" explainText="$(string.POL_0B1165BF_E984_41C3_86F3_C29D5649BA16_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications" class="Machine" presentation="$(presentation.POL_0B1165BF_E984_41C3_86F3_C29D5649BA16)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_0B1165BF_E984_41C3_86F3_C29D5649BA16" valueName="AppPerformance.PrioritizeForeground"/>
+			</elements>
+		</policy>
+		<policy name="POL_BB3F228C_3EB0_49F1_86D7_0F9E6C2D2F8E" displayName="$(string.POL_BB3F228C_3EB0_49F1_86D7_0F9E6C2D2F8E)" explainText="$(string.POL_BB3F228C_3EB0_49F1_86D7_0F9E6C2D2F8E_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications" class="Machine" presentation="$(presentation.POL_BB3F228C_3EB0_49F1_86D7_0F9E6C2D2F8E)">
+			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_BB3F228C_3EB0_49F1_86D7_0F9E6C2D2F8E" valueName="AppPerformance.PDNotification"/>
+			</elements>
+		</policy>
+		<policy name="POL_C1EA1CD6_99E2_4E26_B91B_38B33E23EEA6" displayName="$(string.POL_C1EA1CD6_99E2_4E26_B91B_38B33E23EEA6)" explainText="$(string.POL_C1EA1CD6_99E2_4E26_B91B_38B33E23EEA6_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App1" class="Machine" presentation="$(presentation.POL_C1EA1CD6_99E2_4E26_B91B_38B33E23EEA6)">
+			<parentCategory ref="CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_C1EA1CD6_99E2_4E26_B91B_38B33E23EEA6" valueName="ProcessName"/>
+			</elements>
+		</policy>
+		<policy name="POL_71E7314A_479F_4AB2_A9DC_8E919F4DA7A3" displayName="$(string.POL_71E7314A_479F_4AB2_A9DC_8E919F4DA7A3)" explainText="$(string.POL_71E7314A_479F_4AB2_A9DC_8E919F4DA7A3_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App1" class="Machine" presentation="$(presentation.POL_71E7314A_479F_4AB2_A9DC_8E919F4DA7A3)">
+			<parentCategory ref="CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_71E7314A_479F_4AB2_A9DC_8E919F4DA7A3" valueName="ProfileName"/>
+			</elements>
+		</policy>
+		<policy name="POL_B43CF095_A774_472D_B09F_DAA2044F1498" displayName="$(string.POL_B43CF095_A774_472D_B09F_DAA2044F1498)" explainText="$(string.POL_B43CF095_A774_472D_B09F_DAA2044F1498_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App2" class="Machine" presentation="$(presentation.POL_B43CF095_A774_472D_B09F_DAA2044F1498)">
+			<parentCategory ref="CAT_6DAF2D32_A5E5_40E3_9A90_CC960CB960D6"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_B43CF095_A774_472D_B09F_DAA2044F1498" valueName="ProfileName"/>
+			</elements>
+		</policy>
+		<policy name="POL_74177D77_6CE4_44A4_8C7D_9C34E2B49C4A" displayName="$(string.POL_74177D77_6CE4_44A4_8C7D_9C34E2B49C4A)" explainText="$(string.POL_74177D77_6CE4_44A4_8C7D_9C34E2B49C4A_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App2" class="Machine" presentation="$(presentation.POL_74177D77_6CE4_44A4_8C7D_9C34E2B49C4A)">
+			<parentCategory ref="CAT_6DAF2D32_A5E5_40E3_9A90_CC960CB960D6"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_74177D77_6CE4_44A4_8C7D_9C34E2B49C4A" valueName="ProcessName"/>
+			</elements>
+		</policy>
+		<policy name="POL_463C5E47_9300_4391_BDB2_D4EB470B2D67" displayName="$(string.POL_463C5E47_9300_4391_BDB2_D4EB470B2D67)" explainText="$(string.POL_463C5E47_9300_4391_BDB2_D4EB470B2D67_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App3" class="Machine" presentation="$(presentation.POL_463C5E47_9300_4391_BDB2_D4EB470B2D67)">
+			<parentCategory ref="CAT_07AAEA8B_96CB_4361_B771_5B4EA3E60FC1"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_463C5E47_9300_4391_BDB2_D4EB470B2D67" valueName="ProcessName"/>
+			</elements>
+		</policy>
+		<policy name="POL_BB7908AD_7437_4D01_BF0C_44C37558AD5C" displayName="$(string.POL_BB7908AD_7437_4D01_BF0C_44C37558AD5C)" explainText="$(string.POL_BB7908AD_7437_4D01_BF0C_44C37558AD5C_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App3" class="Machine" presentation="$(presentation.POL_BB7908AD_7437_4D01_BF0C_44C37558AD5C)">
+			<parentCategory ref="CAT_07AAEA8B_96CB_4361_B771_5B4EA3E60FC1"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_BB7908AD_7437_4D01_BF0C_44C37558AD5C" valueName="ProfileName"/>
+			</elements>
+		</policy>
+		<policy name="POL_9A835FAC_A941_49AC_995D_869DAE5DEEAF" displayName="$(string.POL_9A835FAC_A941_49AC_995D_869DAE5DEEAF)" explainText="$(string.POL_9A835FAC_A941_49AC_995D_869DAE5DEEAF_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App4" class="Machine" presentation="$(presentation.POL_9A835FAC_A941_49AC_995D_869DAE5DEEAF)">
+			<parentCategory ref="CAT_D31C1F87_1D5E_4ECB_A9B4_63CE7209AE18"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_9A835FAC_A941_49AC_995D_869DAE5DEEAF" valueName="ProcessName"/>
+			</elements>
+		</policy>
+		<policy name="POL_69532E88_A6B0_418F_8828_1AC303E528BF" displayName="$(string.POL_69532E88_A6B0_418F_8828_1AC303E528BF)" explainText="$(string.POL_69532E88_A6B0_418F_8828_1AC303E528BF_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App4" class="Machine" presentation="$(presentation.POL_69532E88_A6B0_418F_8828_1AC303E528BF)">
+			<parentCategory ref="CAT_D31C1F87_1D5E_4ECB_A9B4_63CE7209AE18"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_69532E88_A6B0_418F_8828_1AC303E528BF" valueName="ProfileName"/>
+			</elements>
+		</policy>
+		<policy name="POL_9844F00D_F42C_4F14_8FE8_B02CC23FDE3C" displayName="$(string.POL_9844F00D_F42C_4F14_8FE8_B02CC23FDE3C)" explainText="$(string.POL_9844F00D_F42C_4F14_8FE8_B02CC23FDE3C_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App5" class="Machine" presentation="$(presentation.POL_9844F00D_F42C_4F14_8FE8_B02CC23FDE3C)">
+			<parentCategory ref="CAT_EC665C71_4588_4CF1_BC2A_582F79978AD5"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_9844F00D_F42C_4F14_8FE8_B02CC23FDE3C" valueName="ProcessName"/>
+			</elements>
+		</policy>
+		<policy name="POL_443A9E70_281F_44B9_8255_C24F71763195" displayName="$(string.POL_443A9E70_281F_44B9_8255_C24F71763195)" explainText="$(string.POL_443A9E70_281F_44B9_8255_C24F71763195_HELP)" key="SOFTWARE\DELL\DellConfigHub\DellOptimizer\OptimizerSettings\Applications\App5" class="Machine" presentation="$(presentation.POL_443A9E70_281F_44B9_8255_C24F71763195)">
+			<parentCategory ref="CAT_EC665C71_4588_4CF1_BC2A_582F79978AD5"/>
+			<supportedOn ref="windows:SUPPORTED_Windows10"/>
+			<elements>
+				<text id="TXT_443A9E70_281F_44B9_8255_C24F71763195" valueName="ProfileName"/>
+			</elements>
+		</policy>
+	</policies>
+</policyDefinitions>
