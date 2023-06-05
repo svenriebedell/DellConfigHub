@@ -930,7 +930,7 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     
                     If($DCUBIOSResult.ExitCode -eq 0)
                         {
-    
+                            Write-Host ""
                             Write-Host "Dell Command | Update set BIOS Password successfully" -BackgroundColor Green
                             Write-Host "***** End of section BIOS Password setting Dell Command | Update *****"
                             Write-Host "**********************************************************************"
