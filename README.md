@@ -39,3 +39,6 @@ The provided PowerShell script **(DellConfigurationHub_policy.ps1)** need to run
 
 ### Enable or disable Software configuration
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/9a55eb11-32d3-4c40-8d7f-1696f5ab9448)
+
+The Value could be Change to $true or $false. If value $true you select this application to be configured on next time the script will be run.
+
