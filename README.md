@@ -42,3 +42,4 @@ The provided PowerShell script **(DellConfigurationHub_policy.ps1)** need to run
 
 The Value could be Change to $true or $false. If value $true you select this application to be configured on next time the script will be run.
 
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/c7c2ef8f-ad5b-4989-8b9b-4e631f80141d)
