@@ -38,4 +38,4 @@ The script must be executed on the client machines. Exemplarily in this text I d
 The provided PowerShell script **(DellConfigurationHub_policy.ps1)** need to run on local machines by Taskplan, Intune or other solutions.
 
 ### Enable or disable Software configuration
-image.png
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/9a55eb11-32d3-4c40-8d7f-1696f5ab9448)
