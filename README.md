@@ -46,4 +46,9 @@ The Value could be Change to $true or $false. If value $true you select this app
 
 If you set value $true and there is no policy set by ADMX the script will be deactive this configuration.
 
+To exclude any Microsoft KeyVault connection information I am using an excel sheet and secure the access to this by standard solution for authenifications like ADD or certificate. In this example the XLS will be stored on Microsoft Blob Storage but you can use other locations as well but you need to tell the script where it could find your XLS.
+
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/d9095ade-207e-4c07-8760-d967cfd7727f)
+
+
 
