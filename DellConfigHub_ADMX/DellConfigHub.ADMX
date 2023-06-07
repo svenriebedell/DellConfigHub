@@ -25,7 +25,7 @@
 			<parentCategory ref="CAT_XML_2_ADMXL"/>
 		</category>
 		<category name="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828" displayName="$(string.CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828)" explainText="$(string.CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828_HELP)">
-			<parentCategory ref="CAT_XML_2_ADMXL"/>
+			<parentCategory ref="CAT_55FD782E_1C41_43D0_B283_CC30F24C5407"/>
 		</category>
 		<category name="CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A" displayName="$(string.CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A)" explainText="$(string.CAT_2D05D8F5_91DA_4456_BDB6_184A1E01658A_HELP)">
 			<parentCategory ref="CAT_5D485E59_FF5B_4A23_9EA5_5F0CDAA81828"/>
