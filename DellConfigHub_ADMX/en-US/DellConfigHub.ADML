@@ -38,7 +38,7 @@ Please set the path where the Dell Config Hub can find your CCTK file like e.g. 
 			<string id="POL_25635B44_3FF5_4750_8E6F_40B326E1A886">Camera</string>
 			<string id="POL_25635B44_3FF5_4750_8E6F_40B326E1A886_HELP">This Policy configures BIOS enable or disable [Camera]</string>
 			<string id="POL_B4A4CFC9_8479_4556_858F_4218F071630E">CapsuleFirmwareUpdate</string>
-			<string id="POL_B4A4CFC9_8479_4556_858F_4218F071630E_HELP">This Policy configures BIOS enable or disable [CapsuleFirmwareUpdate] located under the [SOFTWARE\DELL\DellConfigHub\BIOS\BIOSSettings]</string>
+			<string id="POL_B4A4CFC9_8479_4556_858F_4218F071630E_HELP">This Policy configures BIOS enable or disable [CapsuleFirmwareUpdate]</string>
 			<string id="POL_42FFC475_2943_42F2_965F_6834D7FF38F2">ChasIntrusion</string>
 			<string id="POL_42FFC475_2943_42F2_965F_6834D7FF38F2_HELP">This Policy configures BIOS enable or disable [ChasIntrusion]</string>
 			<string id="POL_5A4EB126_8764_4184_B557_80ACB7F5FFB0">Fastboot</string>
