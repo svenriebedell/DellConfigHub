@@ -1154,8 +1154,8 @@ If(($DellTools |Where-Object Name -EQ "BIOS" | Select-Object -ExpandProperty Ena
                                
             }
         
-        Remove-Item $TempPath$DDMConfigFileName -Recurse -ErrorAction SilentlyContinue
-            Write-Host "temporay configfile is deleted"
+        Remove-Item $TempPath$CCTKConfigFileName -Recurse -ErrorAction SilentlyContinue
+        Write-Host "temporay configfile is deleted"
                     
     }
 else 
@@ -1235,6 +1235,9 @@ else
     {
         Write-Host "Configuration of Dell Display Manager is disabled" -ForegroundColor Red
     }
+
+Remove-Item $TempPath$DDMConfigFileName -Recurse -ErrorAction SilentlyContinue
+Write-Host "temporay configfile is deleted"
 
 
 Write-Host "End of Program"
