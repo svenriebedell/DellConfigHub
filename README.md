@@ -28,7 +28,7 @@ We use the ADMX file to roll out the desired settings on the client machines. Th
 Support Dell Client Management Software:
 - Dell Client BIOS Settings by WMI
 - Dell Command | Update Classic and Universal App
-- Dell Optimizer 4.x and newer
+- Dell Optimizer 4.x and newer / Dell Power Manager over Dell Optimizer
 - Dell Display Manager 2.x and newer
 
 The script must be executed on the client machines. Exemplarily in this text I do this with Intune, it also works with other solutions.
@@ -49,6 +49,10 @@ If you set value $true and there is no policy set by ADMX the script will be dea
 To exclude any Microsoft KeyVault connection information I am using an excel sheet and secure the access to this by standard solution for authenifications like ADD or certificate. In this example the XLSX will be stored on Microsoft Blob Storage but you can use other locations as well but you need to tell the script where it could find your XLSX.
 
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/d9095ade-207e-4c07-8760-d967cfd7727f)
+
+## Explaining ADMX deployment
+
+This Github providing a ADMX Template, this will set RegistryKey on local machine **HKLM:\Software\Dell\DellConfigHub** these keys will be read by PowerShell script.
 
 
 
