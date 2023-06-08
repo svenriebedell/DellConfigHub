@@ -7,7 +7,7 @@ Changelog:
 ## Requirements:
 - The desired Dell Management Tools must be installed first
 - Script needs AZ PowerShell Modules. The script need rights to allow to install this Modules find not installed on machine
-- Cloud or Onpremise Storeage to store configurations files.
+- Cloud or Onpremise Storage to store configurations files.
 - Run processes with BIOS Passwords you need to change the script or using Microsoft KeyVault https://github.com/svenriebedell/KeyVaultBIOSPW
 
 
@@ -53,6 +53,14 @@ To exclude any Microsoft KeyVault connection information I am using an excel she
 ## Explaining ADMX deployment
 
 This Github providing a ADMX Template, this will set RegistryKey on local machine **HKLM:\Software\Dell\DellConfigHub** these keys will be read by PowerShell script.
+The ADMX DellConfigHub has 4 Section:
+1. BIOS (Path CCTK Config-File and BIOS Setting)
+2. DellCommandUpdate (Path DCU Config-File and Update Ring)
+3. DellDisplayManager (Path DDM Config-File)
+4. DellOptimizer (Path DO Config-File, Application, DO Settings)
+
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/838c42b7-d39e-4b1a-b680-fe73030761ec)
+
 
 
 
