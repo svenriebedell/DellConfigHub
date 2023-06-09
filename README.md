@@ -50,6 +50,22 @@ To exclude any Microsoft KeyVault connection information I am using an excel she
 
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/d9095ade-207e-4c07-8760-d967cfd7727f)
 
+## Prepare Configuration Files
+
+Your files could be stored on a central storage inhouse or cloud solution. In this szenario using a Microsoft Blob storage and generate a Container with read-Only access. You can using ADD or other solutions too to secure these files.
+
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/5885aa48-c1a3-410b-b20f-93610e4467b6)
+
+How I can generate these Configuration Files? Using the Dell Management Tools. You can open a UI or CLI and configure your Dell Tool Master and exporting these files later and storing the files on your DellConfigHub Storage.
+
+### Export settings
+
+Dell Command | Update:  **dcu-cli.exe /configure -exportSettings=C:\Temp**
+Dell Command | Configure: **Best by using Dell Command | Configuration Wizard, set your setting and click "Export Config"**
+Dell Optimizer: **do-cli.exe /get -exportFile="JSON file name"** Notice File will stored in %Appdata%
+Dell Display Manager: **Best by using Dell Display Manager 2.x UI / Other Options -> Import/Export Application Settings**
+
+
 ## Explaining ADMX deployment
 
 This Github providing a ADMX Template, this will set RegistryKey on local machine **HKLM:\Software\Dell\DellConfigHub** these keys will be read by PowerShell script.
@@ -62,6 +78,8 @@ The ADMX DellConfigHub has 4 Section:
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/838c42b7-d39e-4b1a-b680-fe73030761ec)
 
 The first release have some restrictions it allows you to define the File to import the required settings but e.g. single BIOS settings will shown in the ADMX but it will later availible to execute.
+
+
 
 The ADMX could be used as normal by Group Policy or you can use the ADMX Import Function of Microsoft Intune (Preview)
 
