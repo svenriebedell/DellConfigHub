@@ -72,5 +72,5 @@ If you have imported the ADMX you can configure you own client configuration pro
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/2719eb3c-d464-43ac-948c-f0d545e0665c)
 
 
-
+d
 
