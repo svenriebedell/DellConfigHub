@@ -60,10 +60,10 @@ How I can generate these Configuration Files? Using the Dell Management Tools. Y
 
 ### Export settings
 
-Dell Command | Update:  **dcu-cli.exe /configure -exportSettings=C:\Temp**
-Dell Command | Configure: **Best by using Dell Command | Configuration Wizard, set your setting and click "Export Config"**
-Dell Optimizer: **do-cli.exe /get -exportFile="JSON file name"** Notice File will stored in %Appdata%
-Dell Display Manager: **Best by using Dell Display Manager 2.x UI / Other Options -> Import/Export Application Settings**
+1. Dell Command | Update:  **dcu-cli.exe /configure -exportSettings=C:\Temp**
+2. Dell Command | Configure: **Best by using Dell Command | Configuration Wizard, set your setting and click "Export Config"**
+3. Dell Optimizer: **do-cli.exe /get -exportFile="JSON file name"** Notice File will stored in %Appdata%
+4. Dell Display Manager: **Best by using Dell Display Manager 2.x UI / Other Options -> Import/Export Application Settings**
 
 
 ## Explaining ADMX deployment
