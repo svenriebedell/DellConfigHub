@@ -6,14 +6,14 @@ Changelog:
 
 ## Requirements:
 - The desired Dell Management Tools must be installed first
-- Script needs AZ PowerShell Modules. The script need rights to allow to install this Modules find not installed on machine
+- Script needs AZ PowerShell Modules
 - Cloud or Onpremise Storage to store configurations files.
-- Run processes with BIOS Passwords you need to change the script or using Microsoft KeyVault https://github.com/svenriebedell/KeyVaultBIOSPW
+- Run processes with BIOS Passwords you need to change the script or using my Microsoft KeyVault project https://github.com/svenriebedell/KeyVaultBIOSPW
 
 
 ## Description
-The goal of the project is to automate the configuration of the most used Dell management tools. Currently supported are the Dell Client BIOS, Dell Command | Update, Dell Display Manager 2.x and Dell Opitimizer. The project is currently in experimental status, so the type of configuration is limited to the import of previously prepared configuration files.
-To create the necessary configuration files, you can use the existing Dell management tools and then export their settings and distribute them automatically via the DellConfigHub.
+The goal of this project is to automate the configuration of the most used Dell management tools. Currently supported are the Dell Client BIOS, Dell Command | Update, Dell Display Manager 2.x and Dell Opitimizer (Dell Power Manager over Dell Optimizer). The project is currently in experimental status, so the type of configuration is limited to the import of previously prepared configuration files.
+To create the necessary configuration files, you can use the existing Dell Management tools and then export their settings and distribute them automatically via the DellConfigHub.
 
 **Legal disclaimer**: THE INFORMATION IN THIS PUBLICATION IS PROVIDED 'AS-IS.' DELL MAKES NO REPRESENTATIONS OR WARRANTIES OF ANY KIND WITH RESPECT TO THE INFORMATION IN THIS PUBLICATION, AND SPECIFICALLY DISCLAIMS IMPLIED WARRANTIES OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE. In no event shall Dell Technologies, its affiliates or suppliers, be liable for any damages whatsoever arising from or related to the information contained herein or actions that you decide to take based thereon, including any direct, indirect, incidental, consequential, loss of business profits or special damages, even if Dell Technologies, its affiliates or suppliers have been advised of the possibility of such damages.
 
@@ -60,6 +60,16 @@ The ADMX DellConfigHub has 4 Section:
 4. DellOptimizer (Path DO Config-File, Application, DO Settings)
 
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/838c42b7-d39e-4b1a-b680-fe73030761ec)
+
+The first release have some restrictions it allows you to define the File to import the required settings but e.g. single BIOS settings will shown in the ADMX but it will later availible to execute.
+
+The ADMX could be used as normal by Group Policy or you can use the ADMX Import Function of Microsoft Intune (Preview)
+
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/df417f2a-062b-4da7-8963-62d9666e5ee4)
+
+If you have imported the ADMX you can configure you own client configuration profile by using the ADMX
+
+![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/2719eb3c-d464-43ac-948c-f0d545e0665c)
 
 
 
