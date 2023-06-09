@@ -71,7 +71,16 @@ If you have imported the ADMX you can configure you own client configuration pro
 
 ![image](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/2719eb3c-d464-43ac-948c-f0d545e0665c)
 
+If you Configuration Policy is deployed successful you can run the PowerShell Script.
+The PowerShell script could be run by Taskplaner, Intune Remediation/PowerShell or other solutions, like you want.
 
 ![AACDF203-3CAF-4E48-B0BA-062B732D7B24](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/ddbd3d80-0974-479c-8279-22a46369d015)
 
+At the moment the protokoll will be reported to the execution Terminal in future releases the results will be saved in Mircosoft Event for better maintaining.
 
+**Planed features:**
+- BIOS Settings without CCTK File
+- Dell Optimizer Setting without JSON File
+- Dell Display Manager 2.x mulit Display import
+- Microsoft Event runtime logging of PowerShell
+- tdb
