@@ -24,7 +24,7 @@ This project consists of three parts:
 2. PowerShell Script **(DellConfigurationHub_policy.ps1)**
 3. Central Store for Configuration file master
 
-We use the ADMX file to roll out the desired settings on the client machines. The ADMX can be used as GPO or as Imported Administrative Templates in Intune. The current version of the ADMX currently supports the provisioning of drive directories and some individual settings for testing. The ADMX provides for the creation of registry keys which are then used by the PowerShell script. The script reads the registry values and starts the download of the required configuration files via BITS and imports them into the respective Dell client management product.
+We use the ADMX file to roll out the desired settings on the client machines. The ADMX can be used as GPO or as Imported Administrative Templates in Intune. The current version of the ADMX currently supports the provisioning of drive directories and a couple of individual settings for testing. The ADMX supports the creation of registry keys which are then used by the PowerShell script. The script reads the registry values and starts the download of the required configuration files via BITS and imports them into the respective Dell client management product.
 
 Support Dell Client Management Software:
 - Dell Client BIOS Settings by WMI
@@ -68,7 +68,7 @@ How can I generate these Configuration Files? Using the Dell Management Tools. Y
 
 ## Explaining ADMX deployment
 
-This GitHub providing a ADMX Template, this will set RegistryKey on local machine **HKLM:\Software\Dell\DellConfigHub** these keys will be read by PowerShell script.
+This GitHub supplying a ADMX Template, this will set RegistryKey on local machine **HKLM:\Software\Dell\DellConfigHub** these keys will be read by PowerShell script.
 The ADMX DellConfigHub has 4 Section:
 1. BIOS (Path CCTK Config-File and BIOS Setting)
 2. DellCommandUpdate (Path DCU Config-File and Update Ring)
@@ -98,7 +98,7 @@ The PowerShell script could be run by Taskplaner, Intune Remediation/PowerShell 
 
 ![AACDF203-3CAF-4E48-B0BA-062B732D7B24](https://github.com/svenriebedell/DellConfigurationHub/assets/99394991/ddbd3d80-0974-479c-8279-22a46369d015)
 
-Now the protocol will be reported to the execution Terminal in future releases the results will be saved in Microsoft Event for better maintaining.
+Now the protocol will be showed in PowerShell execution Terminal only, in future releases the results will be saved in Microsoft Event for better maintaining.
 
 **Planed features:**
 - BIOS Settings without CCTK File
