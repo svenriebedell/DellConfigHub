@@ -926,7 +926,7 @@ If(($DellTools |Where-Object Name -EQ "DCUSetting" | Select-Object -ExpandProper
                     Write-Host "***** Start of section BIOS Password setting Dell Command | Update *****"
                     ## DCU set BIOS PWD
                     $DCUBIOSArgument = $DCUBIOSParameter + $BIOSPWD
-                    $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru -NoNewWindow
+                    $DCUBIOSResult = Start-Process -FilePath $DCUFullName -ArgumentList $DCUBIOSArgument -Wait -PassThru
                     
                     If($DCUBIOSResult.ExitCode -eq 0)
                         {
