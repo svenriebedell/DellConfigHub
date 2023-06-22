@@ -129,7 +129,17 @@ Function find-AZModule
 
             }
 
-        Install-Module -Name $ModuleName -Force -AllowClobber
+        if ($ModuleName -eq "PowerShellGet")
+            {
+                Install-PackageProvider -Name Nuget -MinimumVersion $ModuleVersion -Force -Confirm:$false
+                Install-Module -Name $ModuleName -Force -AllowClobber
+            }
+        else 
+            {
+                Install-Module -Name $ModuleName -Force -AllowClobber
+            }
+
+        
 
         $ModuleCheck = Get-InstalledModule -Name $ModuleName | Where-Object{$_.Version -ge "$ModuleVersion"} | Select-Object -ExpandProperty Name
 
