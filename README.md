@@ -24,6 +24,7 @@ This project consists of three parts:
 2. PowerShell Script **(DellConfigurationHub_policy.ps1)**
 3. Central Store for Configuration file master
 
+## Video:
 https://youtu.be/3U08rR4aqAc
 
 We use the ADMX file to roll out the desired settings on the client machines. The ADMX can be used as GPO or as Imported Administrative Templates in Intune. The current version of the ADMX currently supports the provisioning of drive directories and a couple of individual settings for testing. The ADMX supports the creation of registry keys which are then used by the PowerShell script. The script reads the registry values and starts the download of the required configuration files via BITS and imports them into the respective Dell client management product.
