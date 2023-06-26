@@ -27,6 +27,7 @@ This project consists of three parts:
 ## Video:
 https://youtu.be/3U08rR4aqAc
 
+## Setup solution
 We use the ADMX file to roll out the desired settings on the client machines. The ADMX can be used as GPO or as Imported Administrative Templates in Intune. The current version of the ADMX currently supports the provisioning of drive directories and a couple of individual settings for testing. The ADMX supports the creation of registry keys which are then used by the PowerShell script. The script reads the registry values and starts the download of the required configuration files via BITS and imports them into the respective Dell client management product.
 
 Support Dell Client Management Software:
