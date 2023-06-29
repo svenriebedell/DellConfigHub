@@ -34,6 +34,7 @@ Knowing Issues
     IMPORTANT: Dell Command | Update need to install first on the devices.
     IMPORTANT: Dell Optimizer need to install first on the devices.
     IMPORTANT: Dell Display Manager 2.x need to install first on the devices.
+    IMPORTANT: For BIOS Password management Execl need installed on the devices
 
 .DESCRIPTION
    PowerShell helping to maintaining settings of Dell Client Management tools by a centralized management.
@@ -1221,7 +1222,7 @@ If(($DellTools |Where-Object Name -EQ "DDM" | Select-Object -ExpandProperty Enab
                 ## DDM Import JSON Configfile
                 $DDMConfigFileName = get-ConfigFileName -DellToolName "DDM" -FilePath $TempPath -FileFormat JSON
                 $DDMFullName = $DDMPath + $DDMProgramName
-                $DDMCLIArgument = $DDMParameter + $TempPath + $DDMConfigFileName
+                $DDMCLIArgument = $DDMParameter +" " + $TempPath + $DDMConfigFileName
                 $DDMImportResult = Start-Process -FilePath $DDMFullName -ArgumentList $DDMCLIArgument -NoNewWindow -Wait -PassThru
 
                 If($DDMImportResult.ExitCode -eq 0)
