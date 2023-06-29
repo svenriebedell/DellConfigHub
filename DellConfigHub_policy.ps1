@@ -1,7 +1,7 @@
 <#
 _author_ = Sven Riebe <sven_riebe@Dell.com>
 _twitter_ = @SvenRiebe
-_version_ = 1.0.0
+_version_ = 1.0.1
 _Dev_Status_ = Test
 Copyright © 2022 Dell Inc. or its subsidiaries. All Rights Reserved.
 
@@ -21,9 +21,10 @@ limitations under the License.
 <#Version Changes
 
 1.0.0   inital version
+1.0.1   Correct wrong import argument for DDM
 
 Knowing Issues
-
+- When importing the JSON file for Dell Optimizer, errors are not listed individually, only the number of incorrect settings is counted.
 
 #>
 
@@ -65,7 +66,7 @@ $UnuseBIOSSetting = @(
 )
 
 $TempPath = "C:\Temp\"
-$Keyvault = "https://dellconfighub.blob.core.windows.net/configmaster/KeyVault.xlsx"
+$Keyvault = "https://YourRessource.blob.core.windows.net/configmaster/KeyVault.xlsx"
 $DCUParameter = "/configure -importSettings="
 $DCUBIOSParameter = "/configure -BIOSPassword="
 $DOParameter = "/configure -importfile="
