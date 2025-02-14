@@ -66,7 +66,7 @@ How can I generate these Configuration Files? Using the Dell Management Tools. Y
 
 1. Dell Command | Update:  **dcu-cli.exe /configure -exportSettings=C:\Temp**
 2. Dell Command | Configure: **Best by using Dell Command | Configuration Wizard, set your setting and click "Export Config"**
-3. Dell Optimizer: **do-cli.exe /get -exportFile="JSON file name"** Notice File will be stored in %Appdata%
+3. Dell Optimizer: **do-cli.exe /get -exportFile="JSON file name"** Notice File will be stored in %programdata%
 4. Dell Display Manager: **Best by using Dell Display Manager 2.x UI / Other Options -> Import/Export Application Settings**
 
 
