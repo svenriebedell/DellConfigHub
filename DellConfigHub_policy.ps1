@@ -707,6 +707,88 @@ function set-BIOSSetting
             }
     }
 
+function Uninstall-WinApplication
+    {
+        <#
+            .Synopsis
+            This function will uninstall an win32 application and APPX
+
+            .Description
+            This function allows you to uninstall an Win 32 application from the Windows OS or APPX
+
+            .Parameter SoftwareName
+            Value is the name of the the application
+
+            .Parameter SoftwareType
+            Value is the kind of type of application, if it is Win32 or APPX
+
+
+            Changelog:
+                1.0.0 Initial Version
+
+
+            .Example
+            This example will uninstall the Dell Command | Monitor and it is Win32 application
+
+            Remove-App -SoftwareName "Dell Command | Monitor" -SoftwareType Win32
+
+            #>
+
+        param
+            (
+                [Parameter(Mandatory=$true)][string]$SoftwareName,
+                [Parameter(Mandatory=$true)][ValidateSet("Win32","APPX")][string]$SoftwareType
+            )
+
+        Try
+            {
+                # add asterik to the software name
+                $SoftwareName = "*$SoftwareName*"
+
+                if ($SoftwareType -eq "Win32")
+                    {
+                        if ($software)
+                            {
+                                Try
+                                    {
+                                        $software.Uninstall()
+                                        Write-Output "Software '$SoftwareName' has been uninstalled."
+                                    }
+                                catch
+                                    {
+                                        Write-Output "Software '$SoftwareName' not found."
+                                    }
+                            }
+                        else
+                            {
+                                Write-Output "Software '$SoftwareName' not found."
+                            }
+                    }
+                elseif ($SoftwareType -eq "APPX")
+                    {
+                        try
+                            {
+                                Get-AppxPackage -Name $SoftwareName | Remove-AppxPackage
+                                Write-Output "Appx "$SoftwareName" has been uninstalled."
+                            }
+                        catch
+                            {
+                                Write-Output "App $SoftwareName not found."
+                            }
+                    }
+
+                # get all Win32 Applications with the same match code
+                [Array]$software = Get-CimInstance -ClassName Win32_Product | Where-Object {$_.Name -like $SoftwareName}
+
+
+            }
+        catch
+            {
+                return "Error: " + $_.Exception.Message
+            }
+
+    }
+
 ###############################################################
 ####                                                       ####
 ####                Varible section                        ####
@@ -735,7 +817,15 @@ try
 
                         If($null -ne $PolicyDetails)
                             {
+                                if ($Policy.PolicyName -eq "BIOS")
+                                    {
+                                        # Section for BIOS Settings
 
+                                    }
+                                elseif ($Policy.PolicyName -eq "Uninstall")
+                                    {
+                                        # Section for Uninstall applications
+                                    }
                             }
                         else
                             {
