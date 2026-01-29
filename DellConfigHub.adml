@@ -2,24 +2,24 @@
 <policyDefinitionResources revision="1.0" schemaVersion="1.0"
                          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <displayName>ConfigHub Policy</displayName>
+  <displayName>ConfigHub_Policy</displayName>
   <description>ConfigHub Policy Definitions</description>
   <resources>
     <stringTable>
-      <string id="ConfigHub">ConfigHub Policy</string>
-      <string id="BIOS">BIOS Settings</string>
-      <string id="Uninstall">Uninstall Settings</string>      <string id="--ThermalManagement">--ThermalManagement Policy</string>
-      <string id="--ThermalManagement_HELP">ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature.</string>      <string id="--NumLock">--NumLock Policy</string>
-      <string id="--NumLock_HELP">Enables or disables the keyboard number lock.</string>      <string id="Uninstall_0">Uninstall Setting 0 Policy</string>
-      <string id="Uninstall_0_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_1">Uninstall Setting 1 Policy</string>
-      <string id="Uninstall_1_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_2">Uninstall Setting 2 Policy</string>
-      <string id="Uninstall_2_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_3">Uninstall Setting 3 Policy</string>
-      <string id="Uninstall_3_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_4">Uninstall Setting 4 Policy</string>
-      <string id="Uninstall_4_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_5">Uninstall Setting 5 Policy</string>
-      <string id="Uninstall_5_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_6">Uninstall Setting 6 Policy</string>
-      <string id="Uninstall_6_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_7">Uninstall Setting 7 Policy</string>
-      <string id="Uninstall_7_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_8">Uninstall Setting 8 Policy</string>
-      <string id="Uninstall_8_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_9">Uninstall Setting 9 Policy</string>
+      <string id="ConfigHub">ConfigHub_Policy</string>
+      <string id="BIOS">BIOS_Settings</string>
+      <string id="Uninstall">Uninstall_Settings</string>      <string id="--ThermalManagement">--ThermalManagement_Policy</string>
+      <string id="--ThermalManagement_HELP">ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature.</string>      <string id="--NumLock">--NumLock_Policy</string>
+      <string id="--NumLock_HELP">Enables or disables the keyboard number lock.</string>      <string id="Uninstall_0">Uninstall_Setting_0</string>
+      <string id="Uninstall_0_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_1">Uninstall_Setting_1</string>
+      <string id="Uninstall_1_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_2">Uninstall_Setting_2</string>
+      <string id="Uninstall_2_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_3">Uninstall_Setting_3</string>
+      <string id="Uninstall_3_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_4">Uninstall_Setting_4</string>
+      <string id="Uninstall_4_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_5">Uninstall_Setting_5</string>
+      <string id="Uninstall_5_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_6">Uninstall_Setting_6</string>
+      <string id="Uninstall_6_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_7">Uninstall_Setting_7</string>
+      <string id="Uninstall_7_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_8">Uninstall_Setting_8</string>
+      <string id="Uninstall_8_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>      <string id="Uninstall_9">Uninstall_Setting_9</string>
       <string id="Uninstall_9_HELP">Add here the match code for the application, please test it before it will be relevant only for the required applications</string>    </stringTable>
   </resources>
 </policyDefinitionResources>

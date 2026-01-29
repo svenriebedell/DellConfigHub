@@ -8,8 +8,8 @@
   </policyNamespaces>
   <resources minRequiredRevision="1.0" fallbackCulture="en-US"/>
   <categories>
-    <category name="ConfigHub" displayName="ConfigHub Policy">
-      <category name="BIOS" displayName="BIOS Settings">        <policy name="--ThermalManagement" displayName="--ThermalManagement Policy" explainText="ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--ThermalManagement" class="Machine">
+    <category name="ConfigHub" displayName="ConfigHub_Policy">
+      <category name="BIOS" displayName="BIOS_Settings">        <policy name="--ThermalManagement" displayName="--ThermalManagement_Policy" explainText="ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--ThermalManagement" class="Machine">
           <parentCategory ref="ConfigHub_BIOS"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -25,7 +25,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="--NumLock" displayName="--NumLock Policy" explainText="Enables or disables the keyboard number lock." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--NumLock" class="Machine">
+        </policy>        <policy name="--NumLock" displayName="--NumLock_Policy" explainText="Enables or disables the keyboard number lock." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--NumLock" class="Machine">
           <parentCategory ref="ConfigHub_BIOS"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -38,7 +38,7 @@
               </item>            </enum>
           </elements>
         </policy>      </category>
-      <category name="Uninstall" displayName="Uninstall Settings">        <policy name="Uninstall_0" displayName="Uninstall Setting 0 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\0" class="Machine">
+      <category name="Uninstall" displayName="Uninstall_Settings">        <policy name="Uninstall_0" displayName="Uninstall_Setting_0" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\0" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -52,7 +52,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_1" displayName="Uninstall Setting 1 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\1" class="Machine">
+        </policy>        <policy name="Uninstall_1" displayName="Uninstall_Setting_1" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\1" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -66,7 +66,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_2" displayName="Uninstall Setting 2 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\2" class="Machine">
+        </policy>        <policy name="Uninstall_2" displayName="Uninstall_Setting_2" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\2" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -80,7 +80,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_3" displayName="Uninstall Setting 3 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\3" class="Machine">
+        </policy>        <policy name="Uninstall_3" displayName="Uninstall_Setting_3" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\3" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -94,7 +94,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_4" displayName="Uninstall Setting 4 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\4" class="Machine">
+        </policy>        <policy name="Uninstall_4" displayName="Uninstall_Setting_4" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\4" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -108,7 +108,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_5" displayName="Uninstall Setting 5 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\5" class="Machine">
+        </policy>        <policy name="Uninstall_5" displayName="Uninstall_Setting_5" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\5" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -122,7 +122,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_6" displayName="Uninstall Setting 6 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\6" class="Machine">
+        </policy>        <policy name="Uninstall_6" displayName="Uninstall_Setting_6" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\6" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -136,7 +136,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_7" displayName="Uninstall Setting 7 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\7" class="Machine">
+        </policy>        <policy name="Uninstall_7" displayName="Uninstall_Setting_7" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\7" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -150,7 +150,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_8" displayName="Uninstall Setting 8 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\8" class="Machine">
+        </policy>        <policy name="Uninstall_8" displayName="Uninstall_Setting_8" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\8" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -164,7 +164,7 @@
                 <value><name>Not Configured</name><value>Not Configured</value></value>
               </item>            </enum>
           </elements>
-        </policy>        <policy name="Uninstall_9" displayName="Uninstall Setting 9 Policy" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\9" class="Machine">
+        </policy>        <policy name="Uninstall_9" displayName="Uninstall_Setting_9" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\9" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>

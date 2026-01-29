@@ -14,15 +14,15 @@ $admxContent = @"
   </policyNamespaces>
   <resources minRequiredRevision="1.0" fallbackCulture="en-US"/>
   <categories>
-    <category name="ConfigHub" displayName="ConfigHub Policy">
-      <category name="BIOS" displayName="BIOS Settings">
+    <category name="ConfigHub" displayName="ConfigHub_Policy">
+      <category name="BIOS" displayName="BIOS_Settings">
 "@
 
 # BIOS-Policies
 foreach ($policy in $policyData.Policies.BIOS) {
     $arguments = $policy.Argument -split ", "
     $admxContent += @"
-        <policy name="$($policy.Name)" displayName="$($policy.Name) Policy" explainText="$($policy.Description)" key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\$($policy.Name)" class="Machine">
+        <policy name="$($policy.Name)" displayName="$($policy.Name)_Policy" explainText="$($policy.Description)" key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\$($policy.Name)" class="Machine">
           <parentCategory ref="ConfigHub_BIOS"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -44,14 +44,14 @@ foreach ($policy in $policyData.Policies.BIOS) {
 
 $admxContent += @"
       </category>
-      <category name="Uninstall" displayName="Uninstall Settings">
+      <category name="Uninstall" displayName="Uninstall_Settings">
 "@
 
 # Uninstall-Policies
 foreach ($policy in $policyData.Policies.Uninstall) {
     $types = $policy.Type -split ", "
     $admxContent += @"
-        <policy name="Uninstall_$($policyData.Policies.Uninstall.IndexOf($policy))" displayName="Uninstall Setting $($policyData.Policies.Uninstall.IndexOf($policy)) Policy" explainText="$($policy.DescriptionMatchCode)" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\$($policyData.Policies.Uninstall.IndexOf($policy))" class="Machine">
+        <policy name="Uninstall_$($policyData.Policies.Uninstall.IndexOf($policy))" displayName="Uninstall_Setting_$($policyData.Policies.Uninstall.IndexOf($policy))" explainText="$($policy.DescriptionMatchCode)" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\$($policyData.Policies.Uninstall.IndexOf($policy))" class="Machine">
           <parentCategory ref="ConfigHub_Uninstall"/>
           <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
           <elements>
@@ -89,19 +89,19 @@ $admlContent = @"
 <policyDefinitionResources revision="1.0" schemaVersion="1.0"
                          xmlns:xsd="http://www.w3.org/2001/XMLSchema"
                          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-  <displayName>ConfigHub Policy</displayName>
+  <displayName>ConfigHub_Policy</displayName>
   <description>ConfigHub Policy Definitions</description>
   <resources>
     <stringTable>
-      <string id="ConfigHub">ConfigHub Policy</string>
-      <string id="BIOS">BIOS Settings</string>
-      <string id="Uninstall">Uninstall Settings</string>
+      <string id="ConfigHub">ConfigHub_Policy</string>
+      <string id="BIOS">BIOS_Settings</string>
+      <string id="Uninstall">Uninstall_Settings</string>
 "@
 
 # BIOS-Policies
 foreach ($policy in $policyData.Policies.BIOS) {
     $admlContent += @"
-      <string id="$($policy.Name)">$($policy.Name) Policy</string>
+      <string id="$($policy.Name)">$($policy.Name)_Policy</string>
       <string id="$($policy.Name)_HELP">$($policy.Description)</string>
 "@
 }
@@ -109,7 +109,7 @@ foreach ($policy in $policyData.Policies.BIOS) {
 # Uninstall-Policies
 foreach ($policy in $policyData.Policies.Uninstall) {
     $admlContent += @"
-      <string id="Uninstall_$($policyData.Policies.Uninstall.IndexOf($policy))">Uninstall Setting $($policyData.Policies.Uninstall.IndexOf($policy)) Policy</string>
+      <string id="Uninstall_$($policyData.Policies.Uninstall.IndexOf($policy))">Uninstall_Setting_$($policyData.Policies.Uninstall.IndexOf($policy))</string>
       <string id="Uninstall_$($policyData.Policies.Uninstall.IndexOf($policy))_HELP">$($policy.DescriptionMatchCode)</string>
 "@
 }
