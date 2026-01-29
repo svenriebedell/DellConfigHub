@@ -1,0 +1,88 @@
+﻿{
+    "Policies": {
+        "BIOS": [
+            {
+                "Name": "--ThermalManagement",
+                "Argument": "Optimized, Cool, Quiet, UltraPerformance, Not Configured",
+                "Description": "ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature."
+            },
+            {
+                "Name": "--NumLock",
+                "Argument": "Enabled, Disabled, Not Configured",
+                "Description": "Enables or disables the keyboard number lock."
+            }
+        ],
+        "Uninstall": [
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            },
+            {
+                "Name": "",
+                "MatchCode": "",
+                "Type": "APPX, Win32, Not Configured",
+                "DescriptionMatchCode": "Add here the match code for the application, please test it before it will be relevant only for the required applications",
+                "DescriptionType": "Select the type of application, Win32 or APPX because of different uninstall methods"
+            }
+        ]
+    }
+}

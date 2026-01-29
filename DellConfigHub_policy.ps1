@@ -819,12 +819,18 @@ try
                             {
                                 if ($Policy.PolicyName -eq "BIOS")
                                     {
-                                        # Section for BIOS Settings
+                                        foreach ($PolicySetting in $PolicyDetails)
+                                            {
+                                                Set-DellBIOS -SettingName $PolicySetting.AttributeName -SettingValue $PolicySetting.AttributeValue
+                                            }
 
                                     }
                                 elseif ($Policy.PolicyName -eq "Uninstall")
                                     {
-                                        # Section for Uninstall applications
+                                        foreach ($App in $PolicyDetails)
+                                            {
+                                                Uninstall-WinApplication -SoftwareName $App.AttributeName -SoftwareType $App.AttributeValue
+                                            }
                                     }
                             }
                         else

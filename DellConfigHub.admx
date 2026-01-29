@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions revision="1.0" schemaVersion="1.0"
+                 xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <policyNamespaces>
+    <target prefix="ConfigHub" namespace="ConfigHub"/>
+    <using prefix="windows" namespace="Microsoft.Policies.Windows"/>
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" fallbackCulture="en-US"/>
+  <categories>
+    <category name="ConfigHub" displayName="ConfigHub">
+      <category name="BIOS" displayName="BIOS Settings">        <policy name="--ThermalManagement" displayName="--ThermalManagement" explainText="ThermalManagement cools the fan and the processor to improve the system performance by reducing noise and temperature." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--ThermalManagement" class="Machine">
+          <parentCategory ref="ConfigHub_BIOS"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <enum id="--ThermalManagement_Argument" valueName="Argument" default="Not Configured">              <item name="Optimized">
+                <value><name>Optimized</name><value>Optimized</value></value>
+              </item>              <item name="Cool">
+                <value><name>Cool</name><value>Cool</value></value>
+              </item>              <item name="Quiet">
+                <value><name>Quiet</name><value>Quiet</value></value>
+              </item>              <item name="UltraPerformance">
+                <value><name>UltraPerformance</name><value>UltraPerformance</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="--NumLock" displayName="--NumLock" explainText="Enables or disables the keyboard number lock." key="SOFTWARE\Microsoft\Policies\ConfigHub\BIOS\--NumLock" class="Machine">
+          <parentCategory ref="ConfigHub_BIOS"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <enum id="--NumLock_Argument" valueName="Argument" default="Not Configured">              <item name="Enabled">
+                <value><name>Enabled</name><value>Enabled</value></value>
+              </item>              <item name="Disabled">
+                <value><name>Disabled</name><value>Disabled</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>      </category>
+      <category name="Uninstall" displayName="Uninstall Settings">        <policy name="Uninstall_0" displayName="Uninstall Setting 0" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\0" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_0_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_0_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_0_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_1" displayName="Uninstall Setting 1" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\1" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_1_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_1_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_1_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_2" displayName="Uninstall Setting 2" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\2" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_2_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_2_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_2_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_3" displayName="Uninstall Setting 3" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\3" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_3_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_3_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_3_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_4" displayName="Uninstall Setting 4" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\4" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_4_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_4_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_4_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_5" displayName="Uninstall Setting 5" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\5" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_5_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_5_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_5_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_6" displayName="Uninstall Setting 6" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\6" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_6_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_6_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_6_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_7" displayName="Uninstall Setting 7" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\7" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_7_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_7_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_7_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_8" displayName="Uninstall Setting 8" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\8" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_8_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_8_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_8_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>        <policy name="Uninstall_9" displayName="Uninstall Setting 9" explainText="Add here the match code for the application, please test it before it will be relevant only for the required applications" key="SOFTWARE\Microsoft\Policies\ConfigHub\Uninstall\9" class="Machine">
+          <parentCategory ref="ConfigHub_Uninstall"/>
+          <supportedOn ref="windows:SUPPORTED_Windows_10_0_NOARM"/>
+          <elements>
+            <text id="TXT_Uninstall_9_Name" valueName="Name"/>
+            <text id="TXT_Uninstall_9_MatchCode" valueName="MatchCode"/>
+            <enum id="Uninstall_9_Type" valueName="Type" default="Not Configured">              <item name="APPX">
+                <value><name>APPX</name><value>APPX</value></value>
+              </item>              <item name="Win32">
+                <value><name>Win32</name><value>Win32</value></value>
+              </item>              <item name="Not Configured">
+                <value><name>Not Configured</name><value>Not Configured</value></value>
+              </item>            </enum>
+          </elements>
+        </policy>      </category>
+    </category>
+  </categories>
+</policyDefinitions>
