@@ -4,6 +4,22 @@ $policyData = ConvertFrom-Json -InputObject $jsonContent
 
 # ADMX-Datei erstellen
 $admxContent = @"
+<policyDefinitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+
+<policyNamespaces>
+    <target prefix="ConfigHub" namespace="Dell.Policies.ConfigHub" />
+    <using namespace="Dell.Policies" prefix="ConfigHub"  />
+</policyNamespaces>
+
+<resources minRequiredRevision="1.0" fallbackCulture""en-US" />
+  <categories>
+    <category name="CtMyCompLogonMessageBox" displayName="$(string.CtmyCompLogonMessageBox)">
+    <parentCategory ref="mycompany:CtMyCompany" />
+    </category>
+  </categories>
+
+
+
 <?xml version="1.0" encoding="utf-8"?>
 <policyDefinitions revision="1.0" schemaVersion="1.0"
                  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
