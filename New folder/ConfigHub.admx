@@ -1,0 +1,416 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitions revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions">
+  <policyNamespaces>
+    <target prefix="ConfigHub" namespace="ConfigHub.Policies" />
+  </policyNamespaces>
+  <resources minRequiredRevision="1.0" />
+  <supportedOn>
+    <definitions>
+      <definition name="Default" displayName="$(string.SUPPORTED_Default)" />
+    </definitions>
+  </supportedOn>
+  <categories>
+    <category name="ConfigHub.Category.BIOS" displayName="$(string.Category_BIOS)" />
+    <category name="ConfigHub.Category.Uninstall" displayName="$(string.Category_Uninstall)" />
+  </categories>
+  <policies>
+    <policy name="ConfigHub.Policy.ThermalManagement" class="Machine" displayName="$(string.Policy_ThermalManagement_Name)" explainText="$(string.Policy_ThermalManagement_Explain)">
+      <parentCategory ref="ConfigHub.Category.BIOS" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_ThermalManagement" key="Software\ConfigHub\BIOS" valueName="ThermalManagement">
+          <item displayName="$(string.Enum_ThermalManagement_Optimized)">
+            <value>
+              <string>Optimized</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_ThermalManagement_Cool)">
+            <value>
+              <string>Cool</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_ThermalManagement_Quiet)">
+            <value>
+              <string>Quiet</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_ThermalManagement_UltraPerformance)">
+            <value>
+              <string>UltraPerformance</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_ThermalManagement" />
+    </policy>
+    <policy name="ConfigHub.Policy.NumLock" class="Machine" displayName="$(string.Policy_NumLock_Name)" explainText="$(string.Policy_NumLock_Explain)">
+      <parentCategory ref="ConfigHub.Category.BIOS" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_NumLock" key="Software\ConfigHub\BIOS" valueName="NumLock">
+          <item displayName="$(string.Enum_NumLock_Enabled)">
+            <value>
+              <string>Enabled</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_NumLock_Disabled)">
+            <value>
+              <string>Disabled</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_NumLock" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall01_Name" class="Machine" displayName="$(string.Policy_Uninstall01_Name_Name)" explainText="$(string.Policy_Uninstall01_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall01_Name" key="Software\ConfigHub\Uninstall\Application01" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall01_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall01_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall01_MatchCode_Name)" explainText="$(string.Policy_Uninstall01_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall01_MatchCode" key="Software\ConfigHub\Uninstall\Application01" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall01_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall01_Type" class="Machine" displayName="$(string.Policy_Uninstall01_Type_Name)" explainText="$(string.Policy_Uninstall01_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall01_Type" key="Software\ConfigHub\Uninstall\Application01" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall01_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall01_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall01_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall02_Name" class="Machine" displayName="$(string.Policy_Uninstall02_Name_Name)" explainText="$(string.Policy_Uninstall02_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall02_Name" key="Software\ConfigHub\Uninstall\Application02" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall02_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall02_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall02_MatchCode_Name)" explainText="$(string.Policy_Uninstall02_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall02_MatchCode" key="Software\ConfigHub\Uninstall\Application02" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall02_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall02_Type" class="Machine" displayName="$(string.Policy_Uninstall02_Type_Name)" explainText="$(string.Policy_Uninstall02_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall02_Type" key="Software\ConfigHub\Uninstall\Application02" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall02_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall02_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall02_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall03_Name" class="Machine" displayName="$(string.Policy_Uninstall03_Name_Name)" explainText="$(string.Policy_Uninstall03_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall03_Name" key="Software\ConfigHub\Uninstall\Application03" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall03_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall03_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall03_MatchCode_Name)" explainText="$(string.Policy_Uninstall03_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall03_MatchCode" key="Software\ConfigHub\Uninstall\Application03" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall03_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall03_Type" class="Machine" displayName="$(string.Policy_Uninstall03_Type_Name)" explainText="$(string.Policy_Uninstall03_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall03_Type" key="Software\ConfigHub\Uninstall\Application03" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall03_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall03_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall03_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall04_Name" class="Machine" displayName="$(string.Policy_Uninstall04_Name_Name)" explainText="$(string.Policy_Uninstall04_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall04_Name" key="Software\ConfigHub\Uninstall\Application04" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall04_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall04_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall04_MatchCode_Name)" explainText="$(string.Policy_Uninstall04_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall04_MatchCode" key="Software\ConfigHub\Uninstall\Application04" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall04_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall04_Type" class="Machine" displayName="$(string.Policy_Uninstall04_Type_Name)" explainText="$(string.Policy_Uninstall04_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall04_Type" key="Software\ConfigHub\Uninstall\Application04" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall04_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall04_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall04_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall05_Name" class="Machine" displayName="$(string.Policy_Uninstall05_Name_Name)" explainText="$(string.Policy_Uninstall05_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall05_Name" key="Software\ConfigHub\Uninstall\Application05" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall05_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall05_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall05_MatchCode_Name)" explainText="$(string.Policy_Uninstall05_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall05_MatchCode" key="Software\ConfigHub\Uninstall\Application05" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall05_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall05_Type" class="Machine" displayName="$(string.Policy_Uninstall05_Type_Name)" explainText="$(string.Policy_Uninstall05_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall05_Type" key="Software\ConfigHub\Uninstall\Application05" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall05_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall05_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall05_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall06_Name" class="Machine" displayName="$(string.Policy_Uninstall06_Name_Name)" explainText="$(string.Policy_Uninstall06_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall06_Name" key="Software\ConfigHub\Uninstall\Application06" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall06_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall06_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall06_MatchCode_Name)" explainText="$(string.Policy_Uninstall06_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall06_MatchCode" key="Software\ConfigHub\Uninstall\Application06" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall06_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall06_Type" class="Machine" displayName="$(string.Policy_Uninstall06_Type_Name)" explainText="$(string.Policy_Uninstall06_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall06_Type" key="Software\ConfigHub\Uninstall\Application06" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall06_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall06_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall06_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall07_Name" class="Machine" displayName="$(string.Policy_Uninstall07_Name_Name)" explainText="$(string.Policy_Uninstall07_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall07_Name" key="Software\ConfigHub\Uninstall\Application07" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall07_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall07_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall07_MatchCode_Name)" explainText="$(string.Policy_Uninstall07_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall07_MatchCode" key="Software\ConfigHub\Uninstall\Application07" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall07_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall07_Type" class="Machine" displayName="$(string.Policy_Uninstall07_Type_Name)" explainText="$(string.Policy_Uninstall07_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall07_Type" key="Software\ConfigHub\Uninstall\Application07" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall07_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall07_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall07_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall08_Name" class="Machine" displayName="$(string.Policy_Uninstall08_Name_Name)" explainText="$(string.Policy_Uninstall08_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall08_Name" key="Software\ConfigHub\Uninstall\Application08" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall08_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall08_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall08_MatchCode_Name)" explainText="$(string.Policy_Uninstall08_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall08_MatchCode" key="Software\ConfigHub\Uninstall\Application08" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall08_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall08_Type" class="Machine" displayName="$(string.Policy_Uninstall08_Type_Name)" explainText="$(string.Policy_Uninstall08_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall08_Type" key="Software\ConfigHub\Uninstall\Application08" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall08_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall08_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall08_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall09_Name" class="Machine" displayName="$(string.Policy_Uninstall09_Name_Name)" explainText="$(string.Policy_Uninstall09_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall09_Name" key="Software\ConfigHub\Uninstall\Application09" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall09_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall09_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall09_MatchCode_Name)" explainText="$(string.Policy_Uninstall09_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall09_MatchCode" key="Software\ConfigHub\Uninstall\Application09" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall09_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall09_Type" class="Machine" displayName="$(string.Policy_Uninstall09_Type_Name)" explainText="$(string.Policy_Uninstall09_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall09_Type" key="Software\ConfigHub\Uninstall\Application09" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall09_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall09_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall09_Type" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall10_Name" class="Machine" displayName="$(string.Policy_Uninstall10_Name_Name)" explainText="$(string.Policy_Uninstall10_Name_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall10_Name" key="Software\ConfigHub\Uninstall\Application10" valueName="Name" />
+      </elements>
+      <presentation ref="Presentation_Uninstall10_Name" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall10_MatchCode" class="Machine" displayName="$(string.Policy_Uninstall10_MatchCode_Name)" explainText="$(string.Policy_Uninstall10_MatchCode_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <textBox id="Elm_Uninstall10_MatchCode" key="Software\ConfigHub\Uninstall\Application10" valueName="MatchCode" />
+      </elements>
+      <presentation ref="Presentation_Uninstall10_MatchCode" />
+    </policy>
+    <policy name="ConfigHub.Policy.Uninstall10_Type" class="Machine" displayName="$(string.Policy_Uninstall10_Type_Name)" explainText="$(string.Policy_Uninstall10_Type_Explain)">
+      <parentCategory ref="ConfigHub.Category.Uninstall" />
+      <supportedOn ref="Default" />
+      <elements>
+        <enum id="Elm_Uninstall10_Type" key="Software\ConfigHub\Uninstall\Application10" valueName="Type">
+          <item displayName="$(string.Enum_Uninstall10_Type_APPX)">
+            <value>
+              <string>APPX</string>
+            </value>
+          </item>
+          <item displayName="$(string.Enum_Uninstall10_Type_Win32)">
+            <value>
+              <string>Win32</string>
+            </value>
+          </item>
+        </enum>
+      </elements>
+      <presentation ref="Presentation_Uninstall10_Type" />
+    </policy>
+  </policies>
+</policyDefinitions>

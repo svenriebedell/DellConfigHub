@@ -1,0 +1,198 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<policyDefinitionResources revision="1.0" schemaVersion="1.0" xmlns="http://schemas.microsoft.com/GroupPolicy/2006/07/PolicyDefinitions/Resources">
+  <stringTable>
+    <string id="SUPPORTED_Default">Windows (Default)</string>
+    <string id="TEMPLATE_DisplayName">ConfigHub</string>
+    <string id="TEMPLATE_Description">Define Dell BIOS settings for deploy and allows to define up to 10 applications you like to uninstall</string>
+    <string id="Category_BIOS">BIOS</string>
+    <string id="Category_Uninstall">Uninstall</string>
+    <string id="Policy_ThermalManagement_Name">Thermal Management mode</string>
+    <string id="Policy_ThermalManagement_Explain">Cools fan/CPU to balance noise, thermals, and performance.</string>
+    <string id="Enum_ThermalManagement_Optimized">Optimized</string>
+    <string id="Enum_ThermalManagement_Cool">Cool</string>
+    <string id="Enum_ThermalManagement_Quiet">Quiet</string>
+    <string id="Enum_ThermalManagement_UltraPerformance">UltraPerformance</string>
+    <string id="Policy_NumLock_Name">Keyboard NumLock</string>
+    <string id="Policy_NumLock_Explain">Enables or disables the keyboard number lock.</string>
+    <string id="Enum_NumLock_Enabled">Enabled</string>
+    <string id="Enum_NumLock_Disabled">Disabled</string>
+    <string id="Policy_Uninstall01_Name_Name">Uninstall Application 01 - Name</string>
+    <string id="Policy_Uninstall01_Name_Explain">Application display name for Application 01.</string>
+    <string id="Policy_Uninstall01_MatchCode_Name">Uninstall Application 01 - MatchCode</string>
+    <string id="Policy_Uninstall01_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall01_Type_Name">Uninstall Application 01 - Type</string>
+    <string id="Policy_Uninstall01_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall01_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall01_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall02_Name_Name">Uninstall Application 02 - Name</string>
+    <string id="Policy_Uninstall02_Name_Explain">Application display name for Application 02.</string>
+    <string id="Policy_Uninstall02_MatchCode_Name">Uninstall Application 02 - MatchCode</string>
+    <string id="Policy_Uninstall02_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall02_Type_Name">Uninstall Application 02 - Type</string>
+    <string id="Policy_Uninstall02_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall02_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall02_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall03_Name_Name">Uninstall Application 03 - Name</string>
+    <string id="Policy_Uninstall03_Name_Explain">Application display name for Application 03.</string>
+    <string id="Policy_Uninstall03_MatchCode_Name">Uninstall Application 03 - MatchCode</string>
+    <string id="Policy_Uninstall03_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall03_Type_Name">Uninstall Application 03 - Type</string>
+    <string id="Policy_Uninstall03_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall03_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall03_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall04_Name_Name">Uninstall Application 04 - Name</string>
+    <string id="Policy_Uninstall04_Name_Explain">Application display name for Application 04.</string>
+    <string id="Policy_Uninstall04_MatchCode_Name">Uninstall Application 04 - MatchCode</string>
+    <string id="Policy_Uninstall04_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall04_Type_Name">Uninstall Application 04 - Type</string>
+    <string id="Policy_Uninstall04_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall04_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall04_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall05_Name_Name">Uninstall Application 05 - Name</string>
+    <string id="Policy_Uninstall05_Name_Explain">Application display name for Application 05.</string>
+    <string id="Policy_Uninstall05_MatchCode_Name">Uninstall Application 05 - MatchCode</string>
+    <string id="Policy_Uninstall05_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall05_Type_Name">Uninstall Application 05 - Type</string>
+    <string id="Policy_Uninstall05_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall05_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall05_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall06_Name_Name">Uninstall Application 06 - Name</string>
+    <string id="Policy_Uninstall06_Name_Explain">Application display name for Application 06.</string>
+    <string id="Policy_Uninstall06_MatchCode_Name">Uninstall Application 06 - MatchCode</string>
+    <string id="Policy_Uninstall06_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall06_Type_Name">Uninstall Application 06 - Type</string>
+    <string id="Policy_Uninstall06_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall06_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall06_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall07_Name_Name">Uninstall Application 07 - Name</string>
+    <string id="Policy_Uninstall07_Name_Explain">Application display name for Application 07.</string>
+    <string id="Policy_Uninstall07_MatchCode_Name">Uninstall Application 07 - MatchCode</string>
+    <string id="Policy_Uninstall07_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall07_Type_Name">Uninstall Application 07 - Type</string>
+    <string id="Policy_Uninstall07_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall07_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall07_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall08_Name_Name">Uninstall Application 08 - Name</string>
+    <string id="Policy_Uninstall08_Name_Explain">Application display name for Application 08.</string>
+    <string id="Policy_Uninstall08_MatchCode_Name">Uninstall Application 08 - MatchCode</string>
+    <string id="Policy_Uninstall08_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall08_Type_Name">Uninstall Application 08 - Type</string>
+    <string id="Policy_Uninstall08_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall08_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall08_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall09_Name_Name">Uninstall Application 09 - Name</string>
+    <string id="Policy_Uninstall09_Name_Explain">Application display name for Application 09.</string>
+    <string id="Policy_Uninstall09_MatchCode_Name">Uninstall Application 09 - MatchCode</string>
+    <string id="Policy_Uninstall09_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall09_Type_Name">Uninstall Application 09 - Type</string>
+    <string id="Policy_Uninstall09_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall09_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall09_Type_Win32">Win32</string>
+    <string id="Policy_Uninstall10_Name_Name">Uninstall Application 10 - Name</string>
+    <string id="Policy_Uninstall10_Name_Explain">Application display name for Application 10.</string>
+    <string id="Policy_Uninstall10_MatchCode_Name">Uninstall Application 10 - MatchCode</string>
+    <string id="Policy_Uninstall10_MatchCode_Explain">Match code used to detect the application; verify before rollout.</string>
+    <string id="Policy_Uninstall10_Type_Name">Uninstall Application 10 - Type</string>
+    <string id="Policy_Uninstall10_Type_Explain">Select the application type due to different uninstall methods.</string>
+    <string id="Enum_Uninstall10_Type_APPX">APPX</string>
+    <string id="Enum_Uninstall10_Type_Win32">Win32</string>
+  </stringTable>
+  <presentationTable>
+    <presentation id="Presentation_ThermalManagement" displayName="$(string.Policy_ThermalManagement_Name)">
+      <dropDownList refId="Elm_ThermalManagement" />
+    </presentation>
+    <presentation id="Presentation_NumLock" displayName="$(string.Policy_NumLock_Name)">
+      <dropDownList refId="Elm_NumLock" />
+    </presentation>
+    <presentation id="Presentation_Uninstall01_Name" displayName="$(string.Policy_Uninstall01_Name_Name)">
+      <textBox refId="Elm_Uninstall01_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall01_MatchCode" displayName="$(string.Policy_Uninstall01_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall01_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall01_Type" displayName="$(string.Policy_Uninstall01_Type_Name)">
+      <dropDownList refId="Elm_Uninstall01_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall02_Name" displayName="$(string.Policy_Uninstall02_Name_Name)">
+      <textBox refId="Elm_Uninstall02_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall02_MatchCode" displayName="$(string.Policy_Uninstall02_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall02_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall02_Type" displayName="$(string.Policy_Uninstall02_Type_Name)">
+      <dropDownList refId="Elm_Uninstall02_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall03_Name" displayName="$(string.Policy_Uninstall03_Name_Name)">
+      <textBox refId="Elm_Uninstall03_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall03_MatchCode" displayName="$(string.Policy_Uninstall03_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall03_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall03_Type" displayName="$(string.Policy_Uninstall03_Type_Name)">
+      <dropDownList refId="Elm_Uninstall03_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall04_Name" displayName="$(string.Policy_Uninstall04_Name_Name)">
+      <textBox refId="Elm_Uninstall04_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall04_MatchCode" displayName="$(string.Policy_Uninstall04_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall04_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall04_Type" displayName="$(string.Policy_Uninstall04_Type_Name)">
+      <dropDownList refId="Elm_Uninstall04_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall05_Name" displayName="$(string.Policy_Uninstall05_Name_Name)">
+      <textBox refId="Elm_Uninstall05_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall05_MatchCode" displayName="$(string.Policy_Uninstall05_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall05_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall05_Type" displayName="$(string.Policy_Uninstall05_Type_Name)">
+      <dropDownList refId="Elm_Uninstall05_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall06_Name" displayName="$(string.Policy_Uninstall06_Name_Name)">
+      <textBox refId="Elm_Uninstall06_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall06_MatchCode" displayName="$(string.Policy_Uninstall06_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall06_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall06_Type" displayName="$(string.Policy_Uninstall06_Type_Name)">
+      <dropDownList refId="Elm_Uninstall06_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall07_Name" displayName="$(string.Policy_Uninstall07_Name_Name)">
+      <textBox refId="Elm_Uninstall07_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall07_MatchCode" displayName="$(string.Policy_Uninstall07_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall07_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall07_Type" displayName="$(string.Policy_Uninstall07_Type_Name)">
+      <dropDownList refId="Elm_Uninstall07_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall08_Name" displayName="$(string.Policy_Uninstall08_Name_Name)">
+      <textBox refId="Elm_Uninstall08_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall08_MatchCode" displayName="$(string.Policy_Uninstall08_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall08_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall08_Type" displayName="$(string.Policy_Uninstall08_Type_Name)">
+      <dropDownList refId="Elm_Uninstall08_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall09_Name" displayName="$(string.Policy_Uninstall09_Name_Name)">
+      <textBox refId="Elm_Uninstall09_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall09_MatchCode" displayName="$(string.Policy_Uninstall09_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall09_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall09_Type" displayName="$(string.Policy_Uninstall09_Type_Name)">
+      <dropDownList refId="Elm_Uninstall09_Type" />
+    </presentation>
+    <presentation id="Presentation_Uninstall10_Name" displayName="$(string.Policy_Uninstall10_Name_Name)">
+      <textBox refId="Elm_Uninstall10_Name" />
+    </presentation>
+    <presentation id="Presentation_Uninstall10_MatchCode" displayName="$(string.Policy_Uninstall10_MatchCode_Name)">
+      <textBox refId="Elm_Uninstall10_MatchCode" />
+    </presentation>
+    <presentation id="Presentation_Uninstall10_Type" displayName="$(string.Policy_Uninstall10_Type_Name)">
+      <dropDownList refId="Elm_Uninstall10_Type" />
+    </presentation>
+  </presentationTable>
+</policyDefinitionResources>
